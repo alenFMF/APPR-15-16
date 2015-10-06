@@ -1,0 +1,672 @@
+---
+title: "Uvod"
+output:
+  ioslides_presentation:
+    incremental: yes
+framework: io2012
+---
+
+## Analiza podatkov
+
+- Potrebe po *podatkovnih analitikih* (ang. data scientist) strmo naraščajo
+- <img src="viri/job-trends.png" width="600px" float=center>
+
+## Kdo rabi podatkovne analitike?
+
+- finančni sektor (bolj v tujini)
+- nova hitrorastoča start-up podjetja temelječa na informacijskih rešitvah 
+    - deljena ekonomija: Uber, Airbnb, ...
+    - spletni marketing: Google, Facebook
+    - internet stvari, velika podatkovja, mobilne aplikacije
+- podatkovno-krmiljena podjetja (ang. data driven)
+
+## Kaj delajo podatkovni analitiki
+
+- Postavljajo cilje, izive, hipoteze
+- Definirajo potrebne podatke
+- Ugotavljajo, kakšne podatke lahko dobijo
+- Pridobivajo podatke
+- Čistijo podatke
+- Izvajajo raziskovalne analizo (ang. exploratory analysis)
+- Sestavljajo predikcijske modele
+- Interpretirajo rezultate
+- Kritično vrednotijo rezultate
+- Iz rezultatov potegnejo zaključke in jih ustrezno zapišejo
+- Poskrbijo ponovljivost analiz (koda)
+- Distribuirajo rezultate drugim
+
+## Kompetence podatkovnih analitikov
+
+- dobro poznavanje domene raziskav
+- dobro poznavanje matematike in statistike
+- dobro poznavanje programerskih veščin (hackerski duh)
+- <img src="viri/three-circles.png" width="350px" float=center>
+- http://drewconway.com
+
+## Orodja in ponovljive analize
+
+- github, git - shranjevanje verzij kode in podatkov
+- RStudio - razvojno okolje, programiranje, dokumentiranje
+    - R - programski jezik
+    - različni paketi v R za analizo in vizualizacijo podatkov
+    - RMarkdown - dokumentiranje in izdelava prezentacij
+    - Shiny - izdelava interaktivnih aplikacij
+
+## Programski jezik R
+
+- Odprtokodna rešitev, prosto dostopen
+- Ponuja obsežno množico orodij za podporo vseh nalog podatkovne analize
+- RStudio - eno od najboljših razvojnih okolij
+- Velika skupnost, ki ga podpira
+- Dober sistem paketov
+- Alternative: npr. Python in knjižnica Pandas.
+- Lahko si ga predstavljamo kot programsko varianto orodij, kot je Excel
+
+## Namestitev R(studio)
+
+- Osnovno okolje (RConsole): https://www.r-project.org/
+- RStudio: https://www.rstudio.com/
+    - konzola z ukazno vrstico (podobno kot IDLE v Pyhtonu)
+    - projektno okolje (pregled datotek, naloženih spremenljiv, upravljanje paketov, ...)
+  
+## Osnovni objekti{.smaller}
+
+- Osnovni podatkovni tipi:
+    - *character* - nizi
+    - *numeric* - realna števila 
+    - *integer* - cela števila
+    - *complex* - kompleksna števila
+    - *logical* - logične vrednosti (TRUE/FALSE)
+- Sestavljeni podatkovni tipi
+    - *vector* - vektorji - tabele objektov istih tipov
+        - *matrix* - matrike - v resnici poseben tip vektorjev
+        - *array* - večdimenzionalne matrike
+        - *factor* - vektorji kategoričnih spremenljivk
+    - *list* - seznami - lahko vsebujejo objekte različnih podatkovnih tipov
+    - *data.frame* - podatkovne tabel s poimenovanimi stolpci kot vektorji (standardna oblika podatkov za izvajanje analiz)
+
+## Osnovni objekti in izpis
+
+- 
+```r
+> a <- 1     # <- prireditveni operator, lahko uporabimo tudi '='
+> class(a)   # izpis tipa objekta
+[1] "numeric"
+```
+- 
+```r
+> b = 1L     # eksplicitna zahteva vnosa celega števila
+> class(b)
+[1] "integer"
+```
+- 
+```r
+> niz <- "To je niz"  # Niz navedemo v dvojnih navednicah
+```
+- 
+```r
+> niz                 # Avtomatični izpis vsebine
+[1] "To je niz"
+```
+- 
+```r
+> print(niz)          # Zahtevan izpis vsebine
+[1] "To je niz"
+```
+
+## Prirejanje in spremenljivke {.smaller}
+
+- 
+```r
+> TRUE -> c     # Prirejamo lahko tudi v drugo stran
+> class(c)     
+[1] "logical"
+```
+- 
+```r
+> d <- x <- 2 + 3i   # Prirejamo lahko tudi zaporedoma
+> class(x)
+[1] "complex"
+> d
+[1] 2+3i
+```
+- 
+```r
+> rm(d)   # Brisanje spremenljivk
+> d
+Error: object 'd' not found
+```
+- 
+```r
+> 2*(a <- 1.23)   # Prireditev v oklepajih vrne rezultat
+[1] 2.46
+```
+- 
+```r
+> A             # R loči velike in male črke  
+Error: object 'A' not found
+```
+## Prirejanje in spremenljivke
+
+- imena spremenljivk: zaporedja črk, števk, pik in podčrtajev
+- rezervirane besede (npr. ```if```, ```while```, ```NULL```, ```Inf``` ...)
+- operatorji prirejanja (```<-```, ```->```, ```=```)
+- prirejanje je imenovanje objektov v danem okolju (environment)
+- ```objects()``` in ```ls()``` za izpis objektov po imenih v okolju (izpis spremenljivk)
+- ```rm(...)``` brisanje poimenovanj in objektov (spremenljivk) v okolju
+
+## Vektorji {.smaller}
+
+- V zgornjih primerih je bil rezultat vedno podan kot vektor (oblike ```[1] ...```)
+-
+```r
+> 10
+[1] 10
+```
+- 
+```r
+> (v <- 1:20)
+ [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16
+[17] 17 18 19 20
+```
+- V oglatih oklepajih naveden indeks začetnega člena v vrstici
+- Indeksiranje poteka od 1 dalje (v Pythonu od 0 dalje)
+- Z operatorjem dvopičje (```:```) ustvarimo vektor zaporednih števil
+-
+```r
+> 5:2
+[1] 5 4 3 2
+```
+- S funkcijo ```c(...)``` sestavljamo vektorje
+-
+```r
+> c(10, 12, 5)
+[1] 10 12  5
+```
+
+## Tipi in pretvarjanje {.smaller}
+
+- Osnovni podatkovni tipi so vedno zapakirani v vektorje
+-
+```r
+> x <- 1:5
+> class(x)
+[1] "integer"
+> is.numeric(x)
+[1] TRUE
+> is.character(x)
+[1] FALSE
+```
+- Funkcije oblike ```is.tip(...)``` služijo za preverjanje tipa
+- Pozor: pika je sestavni del imena funkcije (ni operator kot pri Pyhtonu)
+- 
+```r
+> as.logical(x)
+[1] TRUE TRUE TRUE TRUE TRUE
+> as.character(x)
+[1] "1" "2" "3" "4" "5"
+```
+- Funkcije oblike ```as.tip(...)``` služijo za pretvarjanje med tipi
+
+## Tipi in pretvarjanje {.smaller}
+
+- Implicitne pretvorbe se zgodijo, ko pri ustvarjanju vektorjev mešamo tipe in je možno vse elemente pretvoriti v enoten tip
+- 
+```r
+> c(1.3, "a")
+[1] "1.3" "a"  
+> c(TRUE, 5)
+[1] 1 5
+> c("a", "TRUE")
+[1] "a"    "TRUE"
+```
+- Nesmiselne eksplicitne pretvorbe vrnejo ```NA``` (oznaka za manjkajočo vrednost)
+-
+```r
+> as.numeric(c("a", "b"))
+[1] NA NA
+Warning message:
+NAs introduced by coercion 
+> as.logical(c("a","b"))
+[1] NA NA
+```
+
+## Ustvarjanje vektorjev {.smaller}
+
+- Funkcija ```vector(...)```
+-
+```r
+> vector("numeric", length=10)
+ [1] 0 0 0 0 0 0 0 0 0 0
+```
+- Funkcije ```tip(...)```
+- 
+```r
+> integer(10)
+ [1] 0 0 0 0 0 0 0 0 0 0
+> character(5)
+[1] "" "" "" "" ""
+```
+- ```seq(n,m,k)``` - vektor z vrednostmi od ```n``` do ```m``` s korakom ```k```
+- 
+```r
+> seq(0.75, 1.4, 0.1)
+[1] 0.75 0.85 0.95 1.05 1.15 1.25 1.35
+```
+- ```rep(v,k)``` - vektor s ```k``` ponovitvami vektorja ```v```
+-
+```r
+> rep(c(1, 2, 3), 3)
+[1] 1 2 3 1 2 3 1 2 3
+```
+
+## Logične vrednosti {.smaller}
+
+- ```TRUE```, ```FALSE``` in ```NA``` (v skrajšani obliki: ```T``` in ```F```)
+- Operatorji negacija (```!```), konjunkcija (```&``` oz. ```&&```) ter disjunkcija (```|``` oz. ```||```)
+- 
+```r
+> !T
+[1] FALSE
+> F || TRUE
+[1] TRUE
+> NA | T
+[1] TRUE
+```
+- Primerjave vračajo logične vrednosti (```<```, ```>```, ```<=```, ```>=```, ```==```, ```!=```)
+-
+```r
+> 1 != 2
+[1] TRUE
+> 10 > 5.5
+[1] TRUE
+```
+- Predikati oblike ```is.nekaj``` vračajo logične vrednosti
+-
+```r
+> is.integer(1)
+[1] FALSE
+> is.finite(20)
+[1] TRUE
+> is.finite(Inf)
+[1] FALSE
+```
+
+## ```Inf``` in ```NaN``` {.smaller}
+
+- 
+```r
+> 1/0
+[1] Inf
+```
+- 
+```r
+> 10/Inf
+[1] 0
+```
+- 
+```r
+> Inf-Inf
+[1] NaN
+```
+- 
+```r
+> sqrt(-1)
+[1] NaN
+Warning message:
+In sqrt(-1) : NaNs produced
+```
+- 
+```r
+> 0/0
+[1] NaN
+```
+
+## Operacije na vektorjih {.smaller}
+
+- Klasične aritmetične operacije ```+```, ```-```, ```*```, ```/```, ```%%```, ...
+- Krožno dopolnjevanje
+-
+```r
+> 1:6 + c(1,2)
+[1] 2 4 4 6 6 8
+> 1:10 %% 3
+ [1] 1 2 0 1 2 0 1 2 0 1
+```
+- Indeksi ```[[]]```
+-
+```r
+> v <- 1:10
+> v[[3]]
+[1] 3
+```
+- Podzaporedja ```[]```
+-
+```r
+> v[c(3,4)]
+[1] 3 4
+```
+- Negativni indeksi povejo, katere člene odstranimo
+-
+```r
+> v[c(-1,-5)]
+[1]  2  3  4  6  7  8  9 10
+```
+
+
+## Atributi {.smaller}
+
+- Vektorju lahko nastavimo atribute
+- 
+```r
+> v <- 1:6
+> attr(v, "nekaj") <- c(1,2)
+> v
+[1] 1 2 3 4 5 6
+attr(,"nekaj")
+[1] 1 2
+> attributes(v)
+$nekaj
+[1] 1 2
+```
+- Vektorju lahko nastavimo imena (poseben atribut ```names```)
+```r
+> v <- c(a=1, b=2, 3)
+> v
+a b   
+1 2 3 
+> attributes(v)
+$names
+[1] "a" "b" "" 
+```
+
+## Faktorji {.smaller}
+
+- Faktorji so vektorji z omejenim naborom vrednosti
+- Uporabljajo se za kategorične spremenljivke
+-
+```r
+> v <- c("a", "b", "b", "a")
+> f <- factor(v)
+> f
+[1] a b b a
+Levels: a b
+```
+- Reprezentacija:
+```r
+> capture.output(dput(factor(v)))
+[1] "structure(c(1L, 2L, 2L, 1L), .Label = c(\"a\", \"b\"), class = \"factor\")"
+```
+-
+```r
+> f <- structure(c(1L, 2L, 2L, 1L), .Label = c("a", "b"), class = "factor")
+> attributes(f)
+$levels
+[1] "a" "b"
+$class
+[1] "factor"
+```
+- Faktorji so vektorji z dodatnimi atributi, ki jih R ustrezno interpretira
+
+## Matrike {.smaller}
+
+- Matrika je vektor z dodatnim atributom ```dim```
+-
+```r
+> a <- matrix(1:6, ncol = 3, nrow = 2)
+> a
+     [,1] [,2] [,3]
+[1,]    1    3    5
+[2,]    2    4    6
+```
+- 
+```r
+> attributes(a)
+$dim
+[1] 2 3
+> class(a)
+[1] "matrix"
+```
+- 
+```r
+> v <- 1:6
+> class(v)
+[1] "integer"
+> attr(v, "dim") <- c(2,3)
+> v
+     [,1] [,2] [,3]
+[1,]    1    3    5
+[2,]    2    4    6
+> class(v)
+[1] "matrix"
+```
+
+## Matrike in več dimenzionalne tabele {.smaller}
+
+- Podobno matriko sestavimo takole:
+```r
+> a <- structure(1:6, dim=c(2,3))
+> class(a)
+[1] "matrix"
+```
+- Večdimenzionalna tabela
+```r
+> b <- array(1:12, c(2, 3, 2))
+> b
+, , 1
+     [,1] [,2] [,3]
+[1,]    1    3    5
+[2,]    2    4    6
+, , 2
+     [,1] [,2] [,3]
+[1,]    7    9   11
+[2,]    8   10   12
+> 
+```
+
+## Matrike in več dimenzionalne tabele {.smaller}
+
+- Funkcija  ```dim(...)``` spreminja atribut  ```dim``` na vektorju
+```r
+> dim(b) <- c(2, 6)
+> b
+     [,1] [,2] [,3] [,4] [,5] [,6]
+[1,]    1    3    5    7    9   11
+[2,]    2    4    6    8   10   12
+> class(b)
+[1] "matrix"
+```
+- Razne dimenzije
+```r
+> length(b)
+[1] 12
+> nrow(b)
+[1] 2
+> ncol(b)
+[1] 6
+> dim(b)
+[1] 2 6
+```
+
+## Poimenovanja vrstic in stolpcev {.smaller}
+
+- 
+```r
+> rownames(b) <- c(1,2)
+> b
+  [,1] [,2] [,3] [,4] [,5] [,6]
+1    1    3    5    7    9   11
+2    2    4    6    8   10   12
+> colnames(b) <- c("prvi", "drugi", "tretji", "četrti", "peti", "šesti")
+> b
+  prvi drugi tretji četrti peti šesti
+1    1     3      5      7    9    11
+2    2     4      6      8   10    12
+> 
+```
+- Vektorji, matrike, faktorji in večdimenzionalne tabele so vektroji z dodatnimi atributi, ki jih R in njegove funkcije ustrezno intepretirajo
+-
+```r
+> v <- c(10, 20)
+> names(v) <- c("prvi", "drugi")
+> v
+ prvi drugi 
+   10    20 
+```
+-
+```r
+> v <- c(prvi=10, drugi=20)
+> v
+ prvi drugi 
+   10    20 
+```
+
+## Seznami {.smaller}
+
+- Zaporedja objektov različnih tipov (kot v Pythonu)
+-
+```r
+> list("a", 1)
+[[1]]
+[1] "a"
+[[2]]
+[1] 1
+```
+- Elementi seznama so lahko poimenovani
+-
+```r
+> seznam <- list(prvi="a", drugi=1)
+$prvi
+[1] "a"
+$drugi
+[1] 1
+```
+- Do elementov dostopamo z dvojnim oglatim oklepajem ali preko imena
+-
+```r
+> seznam[[1]]
+[1] "a"
+> seznam$drugi
+[1] 1
+```
+- Enak način dostopa do posameznih elementov velja tudi za vektorje!
+
+## Razpredelnice {.smaller}
+
+- Uporabljajo se za shranjevanje tabelaričnih podatkov (npr. kot v Excelu)
+- So poseben primer seznama - vsak element seznama je poimenovan stolpec
+-
+```r
+> placila <- data.frame(Ime=c("Janez", "Anja", "Francelj"), Izplacilo=c(100, 120, 90))
+> placila
+       Ime Izplacilo
+1    Janez       100
+2     Anja       120
+3 Francelj        90
+```
+- Poseben atribut ```row.names```
+-
+```r
+> row.names(placila) <- c("prvo", "drugo", "tretje")
+> placila
+            Ime Izplacilo
+prvo      Janez       100
+drugo      Anja       120
+tretje Francelj        90
+```
+- Preberemo jih lahko iz npr. formata CSV, ki ga lahko dobimo iz Excela (funkcije ```read.csv(...)```, ```read.csv2(...)```, ```read.table(...)```)
+
+## Sestavljeni izrazi
+
+- Sestavljen izraz je zaporedje izrazov ločenih z podpičji v zavitih oklepajih, ki se izvedejo
+- Rezultat zaporedja je vrednost zadnjega izraza (če ni za njim podpičja)
+-
+```r
+> {a <- 1; b <- 2 + a; a + b}
+[1] 4
+```
+- Sestavljene izraze uporabljamo podobno kot pri Pythonu zamikanje (bloki), tipično pri krmilnih stavkih, zankah in funkcijah
+
+## Pogojni stavek (```if```) {.smaller}
+
+-
+```r
+> a <- 1
+> if (a > 0) print("večji") 
+[1] "večji"
+> if (a == 5) print("Je pet.") else print("Ni pet") 
+[1] "Ni pet"
+```
+- Pogoj je vedno v oklepaju za ```if````, ```else``` pa ni obvezen
+- Namesto zamikanja uporabljamo bloke
+-
+```r
+> a <- 1
+> if (a < 3) {a <- a + 1; a <- a + 1; print("Morda pa je zdaj čez tri ...")} 
+[1] "Morda pa je zdaj čez tri ..."
+```
+- Pri R zamikanje ni pomembno - imamo sestavljene izraze (oz. bloke), ki jih lahko lepo razpišemo čez več vrstic.
+- Vseeno zamikamo, da je koda bolj pregledna. Npr. v urejevalniku zapišemo:
+-
+```r
+if (a < 3) {
+        a <- a + 1; 
+        a <- a + 1;   
+        print("Morda pa je zdaj čez tri ...")
+} 
+```
+
+## Zanki ```while``` in ```repeat```
+
+- Zanka ```while``` se obnaša enako kot v Pythonu
+-
+```r
+> i <- 0
+> while (i < 3) {print(i); i <- i + 1}
+[1] 0
+[1] 1
+[1] 2
+```
+- Zanka ```repeat``` je neskončna zanka. Prekinemo jo lahko z ```break```
+-
+```r
+> i <- 0
+> repeat {print(i); i <- i + 1; if (i > 2) break}
+[1] 0
+[1] 1
+[1] 2
+```
+
+## Funkcije {.smaller}
+
+- Sestavimo jih na naslednji način
+-
+```r
+> f <- function(a) {a*a}
+> f(3)
+[1] 9
+```
+- Primer rekurzije
+- 
+```r
+> gcd <- function(a, b) {if(b == 0) abs(a) else gcd(b, a %% b)}
+> gcd(12, 15)
+```
+- V funkciji lahko s klicem funkcije ```return(...)``` eksplicitno vrnemo vrednost in zaključimo funkcijo
+```r
+gcd <- function(a, b) { if(b == 0) return(abs(a)) else return(gcd(b, a %% b))}
+> gcd(12, 15)
+```
+- Definicije lastnih operatorjev
+- 
+```r
+> "%m%" <- function(a,b) min(a,b)
+> 3 %m% 4
+[1] 3
+```
+
+## Funkcije {.smaller}
+
+- Podobno kot pri Pythonu so spremenljivke definirane v funkciji lokalne in so definirane samo v lokalnem okolju funkcije
+- Zunanje spremenljivke (globalno okolje) lahko beremo v funkciji, v njih pa lahko pišemo s pomočjo operatorja ```<<-```
+- Funkcijo (oz. program) lahko v tekstovnem urejevalniku napišemo in datoteko naložimo s pomočjo ukaza ```source(pot)```
