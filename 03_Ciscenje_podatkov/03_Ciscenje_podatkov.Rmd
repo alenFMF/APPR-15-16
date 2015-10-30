@@ -390,19 +390,35 @@ Normalizacija v ustrezno obliko poteka na naslednji način:
     - Vrstni red stolpcev ni važen.
     - Nobeni dve vrstici ne smeta biti enaki.
     - Vrstni red vrstic ni važen.
-- Praktično to pomeni, da imamo za vsako relacijo določen primarni ključ.
 
-## <a href="http://holowczak.com/database-normalization/6/">2NF</a> 
+## <a href="http://holowczak.com/database-normalization/6/">2NF</a>{.smaller}
 
-- Pogoj: vsi stolpci v relaciji so imajo samo eno funkcijsko odvisnost, in sicer od primarnega ključa.
-- V praksi: če je primarni ključ določen z enim stolpcem, smo v 2NF.
-- Zato včasih dodamo umetne primarne ključe (npr. št. vrstice).
+- Ključ (ang. superkey): katera koli skupina stolpcev, za katere ne obstajata dve vrstici z istima vrednostima v teh stolpcih. Vsi drugi stolpci so funkcijsko odvisni od stolpcev, ki določajo ključ. 
+- 1NF - vsi stolpci skupaj določajo nek ključ
+- Minimalni ključ (ang. candidate key): ključ, za katerega nobena stroga podmnožica ne predstavlja ključa.
+- Primarni ključ: izbrani minimalni ključ
+- Neključni stolpec: stolpec, ki ni v nobenem minimalnem ključu
+- Pogoj za 2NF: 1NF + nobena stroga množica kakega minimalnega ključa ne funkcijsko določa kak neključni stolpec
+-
+<table
+<tr><td>
+<img src="viri/2nf_1.png" width="100%">
+</td><td>
+<img src="viri/2nf_2.png" width="100%">
+</td></tr></table>
 
 ## <a href="http://holowczak.com/database-normalization/7/">3NF </a>
 
 - Pogoj: relacija je v 2NF in nimamo tranzitivnih funkcionalnih odvisnosti.
 - Tranzitivna funkcionalna odvisnost: 
     - iz `A -> B`, `B -> C` sledi `A -> C`.
+-
+<table
+<tr><td>
+<img src="viri/3nf_1.png" width="100%">
+</td><td>
+<img src="viri/3nf_2.png" width="100%">
+</td></tr></table>
 
 ## <a href="http://holowczak.com/database-normalization/8/">BCNF</a>
 
@@ -418,3 +434,63 @@ Normalizacija v ustrezno obliko poteka na naslednji način:
     - vsaka spremenljivka tvori stolpec
     - za vsako meritev imamo eno vrstico
     - vsak tip meritve je v ločeni tabeli
+- Ekvivalentno: podatki so v 3NF    
+    
+## Najbolj pogosti problemi
+
+- Imena stolpcev so vrednosti, ne pa imena spremenljivk
+- V enem stolpcu hranimo več spremenljivk
+- Spremenljivke hranimo tako v vrsticah kot v stolpcih
+- Več vrst meritev (podatkov) v eni tabeli
+- Več istovrstnih meritev v večih tabelah
+- Hadley Wickham, <a href="http://www.jstatsoft.org/article/view/v059i10/v59i10.pdf">Tidy Data</a>, Journal of Statistical Software, August 2014, Volume 59, Issue 10
+
+## Imena stolpcev s vrednosti
+
+-
+<img src="viri/podatki_v_stolpcih.png" width="80%">
+-
+<img src="viri/operacija_molt.png" width="50%">
+
+## Operacija "melt" {.smaller}
+
+- paket ```reshape2```
+- 
+```{r}
+head(airquality)
+```
+-
+```{r echo=FALSE, warning=FALSE}
+require(reshape2)
+```
+-
+```{r}
+head(melt(airquality, id.vars = c("Month", "Day")))
+```
+
+## En stolpec več spremenljivk
+
+-
+<img src="viri/vec_podatkov_v_stolpcu.png" width="80%">
+- Obdelavo nizov si bomo ogledali kasneje (regularni izrazi)
+
+## Spremenljivke v vrsticah in stolpcih
+
+-
+<img src="viri/podatki_v_vrsticah_in_stolpcih.png" width="80%">
+-
+<img src="viri/podatki_v_vrsticah_in_stolpcih_2.png" width="80%">
+
+## Več vrst meritev v eni tabeli
+
+-
+<img src="viri/prevec_v_eni_tabeli.png" width="60%">
+- Normalizacija
+-
+<img src="viri/normalizacija_tabele.png" width="60%">
+
+## Več istovrstnih meritev v večih tabelah
+
+- Npr. meritve za vsako leto, po osebah, ...
+- Po potrebi dodamo stolpce, ki odražajo delitev in združimo v eno tabelo
+- Npr. delitev po letih: dodamo stolpec leto
