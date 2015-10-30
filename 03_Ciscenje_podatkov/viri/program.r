@@ -83,8 +83,8 @@ tmp3 <- tmp1 %>%
   summarize(Ženske=sum(ST_STUDENTOV, na.rm=TRUE))
 
 tmp4 <- tmp2 %>% 
-        left_join(tmp3) %>%
+        inner_join(tmp3) %>%
         select(VRSTA_IZOBRAZEVANJA, Moški, Ženske) %>%
         arrange(VRSTA_IZOBRAZEVANJA) %>%
-        mutate(faktor=round(Ženske/Moški, 2))
+        mutate(faktor=round(Ženske/Moški, 2), invfaktor=Moški/Ženske)
      

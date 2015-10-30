@@ -61,6 +61,11 @@ ggplot(data=myMovies, aes(x=Type, y=Budget))  + geom_boxplot() + scale_y_log10()
 ggplot(data=myMovies, aes(x=Type, y=Budget))  + geom_jitter() + geom_boxplot(alpha=I(0.6)) + scale_y_log10() 
 
 
+ggplot(data=ToothGrowth, aes(x=dose, y=len))  + geom_point() 
+ggplot(data=ToothGrowth, aes(x=dose, y=len, col=supp))  + geom_point() 
+ggplot(data=ToothGrowth, aes(x=dose, y=len, col=supp))  + geom_point() + facet_grid(.~supp) 
+ggplot(data=ToothGrowth, aes(x=dose, y=len, col=supp))  + geom_point() + facet_grid(.~supp) + stat_smooth(method = "lm")
+
 p <- ggplot(data=ToothGrowth, aes(x=dose, y=len, col=supp))
 summary(myPlot)
 myNewPlot <- myPlot +geom_point()

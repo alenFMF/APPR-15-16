@@ -1,7 +1,11 @@
 ---
 title: "Delo s podatki"
 output:
+  slidy_presentation:
+    incremental: yes
   ioslides_presentation:
+    incremental: yes
+  beamer_presentation:
     incremental: yes
 framework: io2012
 ---

@@ -578,7 +578,7 @@ tretje Francelj        90
 
 ## Sestavljeni izrazi
 
-- Sestavljen izraz je zaporedje izrazov ločenih z podpičji v zavitih oklepajih, ki se izvedejo
+- Sestavljen izraz je zaporedje izrazov ločenih s podpičji v zavitih oklepajih, ki se izvedejo
 - Rezultat zaporedja je vrednost zadnjega izraza (če ni za njim podpičja)
 -
 ```r
@@ -597,7 +597,7 @@ tretje Francelj        90
 > if (a == 5) print("Je pet.") else print("Ni pet") 
 [1] "Ni pet"
 ```
-- Pogoj je vedno v oklepaju za ```if````, ```else``` pa ni obvezen
+- Pogoj je vedno v oklepaju za ```if```, ```else``` pa ni obvezen
 - Namesto zamikanja uporabljamo bloke
 -
 ```r
@@ -651,12 +651,19 @@ if (a < 3) {
 ```r
 > gcd <- function(a, b) {if(b == 0) abs(a) else gcd(b, a %% b)}
 > gcd(12, 15)
+[1] 3
 ```
 - V funkciji lahko s klicem funkcije ```return(...)``` eksplicitno vrnemo vrednost in zaključimo funkcijo
+-
 ```r
 gcd <- function(a, b) { if(b == 0) return(abs(a)) else return(gcd(b, a %% b))}
 > gcd(12, 15)
+[1] 3
 ```
+
+
+## Funkcije {.smaller}
+
 - Definicije lastnih operatorjev
 - 
 ```r
@@ -664,9 +671,26 @@ gcd <- function(a, b) { if(b == 0) return(abs(a)) else return(gcd(b, a %% b))}
 > 3 %m% 4
 [1] 3
 ```
-
-## Funkcije {.smaller}
-
 - Podobno kot pri Pythonu so spremenljivke definirane v funkciji lokalne in so definirane samo v lokalnem okolju funkcije
 - Zunanje spremenljivke (globalno okolje) lahko beremo v funkciji, v njih pa lahko pišemo s pomočjo operatorja ```<<-```
 - Funkcijo (oz. program) lahko v tekstovnem urejevalniku napišemo in datoteko naložimo s pomočjo ukaza ```source(pot)```
+- Nastavljanje delovnega področja (```Session -> Set working directory```) 
+- 
+```r
+> setcwd("/Users/alen")
+```
+- 
+```r
+> getwd()
+[1] "/Users/alen"
+```
+
+## Funkcije
+
+- Funkcije so tudi objekti (shranimo jih v spremenljivke in jim tako dodelimo ime)
+- Zato jih lahko podajamo kot parametre, vračamo, gnezdimo, ...
+- Funkcije imajo lahko pozicijske argumente in poimenovane parametre
+- Ujemanje argumentov in parametrov je malce drugače kot pri Pythonu:
+- Najprej se določijo poimenovani parametri
+- Potem se nepoimenovane argumente obravanava po vrstnem redu pojavitve
+- Argument "tri pikice" (```...```) pomeni zaporedje nekih argumentov. Tipično "tri pikice" predamo kot prvi ali zadnji argument v klicu neke notranje funkcije.
