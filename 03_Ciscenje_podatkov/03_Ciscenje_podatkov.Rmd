@@ -13,7 +13,7 @@ framework: io2012
 - http://www.stat.si/
 - Npr. ```Izobraževanje```, zavihek ```Podatki```, ```Podrobne tabele```
 - Gremo v globino, npr. ```Vpisani v visokošolsko izobraževanje```, izberemo prvo možnost
-- http://pxweb.stat.si/pxweb/Dialog/varval.asp?ma=0955201s&ti=&path=../Database/Dem_soc/09_izobrazevanje/08_terciarno_izobraz/01_09552_vpisani_dodiplomska/&lang=2
+- [Direktna povezava](http://pxweb.stat.si/pxweb/Dialog/varval.asp?ma=0955201s&ti=&path=../Database/Dem_soc/09_izobrazevanje/08_terciarno_izobraz/01_09552_vpisani_dodiplomska/&lang=2)
 - Nastavimo filtre, način prikaza tabele (izvoza) kot ```Prikaz tabele na zaslonu```, za vsak tip podatka izberemo vse možnosti, razen tistih, ki so sumarne (v imenu je ```SKUPAJ```)
 - Gumb ```Izpis podatkov```
 - Podatki se prikažejo kot tabela na zaslonu
@@ -49,73 +49,126 @@ framework: io2012
 - Vsebina v prvih nekaj stolpcih je še vedno podana hierarhično
 - Nimamo glave tabele
 - Prazna polja so označena kot "-"
-- Definirajmo imena stolpcev
-- 
+- Imena stolpcev niso definirana
+
+## Branje tabele {.smaller}
+
+- Uporabili bom paket `readr`
+- RStudio CheatSheets - https://www.rstudio.com/resources/cheatsheets/
+- Pričakuje se, da na koncu predavanj obvladate cheatsheets-e Data Import, Data Transformation, RMarkdown, RStudio, Shiny, Data Visualization (skoraj vse :)
+- Poskusimo naivno prebrati CSV datoteko 
+-
 ```r
-> stolpci <- c("VISOKOŠOLSKI ZAVOD", "VRSTA IZOBRAŽEVANJA", "LETNIK", 
-"NAČIN ŠTUDIJA", "ŠTUDIJSKO LETO", "SPOL", "ST_STUDENTOV")
+uvoz <- read_csv2("0955201ss.csv")
+```
+- Problem: kodna tabela
+-
+```r
+uvoz <- read_csv2("0955201ss.csv", 
+                  locale=locale(encoding="cp1250"))
+```
+- Problem? Pogledamo:
+-
+```r
+problems(uvoz)  
+```
+- Vizualno pregledamo:
+-
+```r
+View(uvoz)
 ```
 
 ## Branje tabele
 
+- V uvozu imamo samo en stolpec!
+- Definirajmo stolpce
+-
+```r
+stolpci <- c("VISOKOSOLSKI_ZAVOD", "VRSTA_IZOBRAZEVANJA", "LETNIK",
+"NACIN_STUDIJA", "SPOL" , "STUDIJSKO_LETO", "ST_STUDENTOV")
+```
+-
+```r
+uvoz <- read_csv2("0955201ss.csv", 
+                  locale=locale(encoding="cp1250"),
+                  col_names=stolpci)
+```
+-
+```r
+problems(uvoz)
+```
+-
+```r
+View(uvoz)
+```
+
+## Branje tabele
 - Izpustiti moramo prve 4 vrstice
-- Prebrati moramo do vključno vrstice 7166
-- Nimamo glav tabele (ang. header)
-- Določiti moramo imena stolpcev, da se datoteka pravilno prebere
-- Prazna polja: presledki, "-", ...
 -
 ```r
-> podatki <- read.csv2(file = "viri//0955201ss.csv", skip=4, 
-nrow=(7166-4), header=FALSE, strip.white=TRUE, col.names=stolpci, 
-fileEncoding="cp1250")
+uvoz <- read_csv2("0955201ss.csv", 
+                  locale=locale(encoding="cp1250"),
+                  col_names=stolpci,
+                  skip=4)
+```
+- Zadnja prebrana vrstica (po branju), ki nas še zanima je 7162
+-
+```r
+uvoz <- read_csv2("0955201ss.csv", 
+                  locale=locale(encoding="cp1250"),
+                  col_names=stolpci,
+                  skip=4,
+                  n_max=7162)
+```
+
+## Branje tabele
+
+- Znak "`-`" pri številu študentov bi radi interpretirali kot `NA`
+-
+```r
+uvoz <- read_csv2("0955201ss.csv", 
+                     locale=locale(encoding="cp1250"),
+                     col_names=stolpci,
+                     skip=4,
+                     n_max=7162,
+                     na=c("", " ", "-"))
 ```
 
 ## Obdelava podatkov {.smaller}
 
-- Nadomeščanje presledkov z ```NA```
+- Zaradi 'hierarhičnega uvoza' bi radi, da se vsi dimenzijski stolpci ponavljajo v vrsticah do naslednjega vnosa
+- Izjema je stolpec `STUDIJSKO_LETO`
 -
 ```r
-> podatki$VISOKOSOLSKI_ZAVOD[podatki$VISOKOSOLSKI_ZAVOD == " "] <- NA
+podatki <- uvoz %>% fill(1:5) %>% drop_na(STUDIJSKO_LETO)
 ```
-- Oziroma:
+- PAZI! Operator `%>%` iz knjižnice `dplyr` pomeni: Rezultat izraza pred operatorjem uporabi kot prvi argument naslednje funkcije
+- Princip kodiranja s pomočjo operatorja `%>%` imenujemo *veriženje* (ang. chaining)
+- Ko se navadimo postane koda zelo berljiva (začnemo s tem, potem najprej naredimo to, potem to, potem to ...)
+- 
 ```r
-> podatki[["VISOKOSOLSKI_ZAVOD"]][podatki[[VISOKOSOLSKI_ZAVOD]] == " "] <- NA
+podatki <- uvoz 
+             %>% fill(1:5) 
+             %>% drop_na(STUDIJSKO_LETO)
 ```
-
-- Dan je vektor z redkimi vrednostmi, vmes ```NA```
-- Vmesne vrednosti želimo dopolniti z zadnjo ne-```NA``` vrednostjo
-- Paket ```zoo```, funkcija ```na.locf```
+- Alternativa je gnezdenje klicev funkcij -> NEPREGLEDNO
 -
 ```r
-> require(zoo)
-> podatki[["VISOKOSOLSKI_ZAVOD"]] <- na.locf(podatki[["VISOKOSOLSKI_ZAVOD"]])
+podatki <- drop_na(fill(uvoz, 1:5), STUDIJSKO_LETO))
 ```
 
 ## Obdelava podatkov {.smaller}
 
-- Ponovimo "vajo" za prvih 5 stolpcev
+- Preverimo tipe stolpcev
 -
 ```r
-for (ime in stolpci[c(-6,-7)]) {
-        podatki[[ime]][podatki[ime] == " "] <- NA;
-        podatki[[ime]] <- na.locf(podatki[[ime]]);
-}
+sapply(zdruzena, class)
 ```
-- Zaradi "čudnega" formata tabele, je potrebno odstraniti določene vrstice
-- Odstrani vrstice z ```NA``` v stolpcu ```STUDIJSKO_LETO```
+- Tip stolpca `ST_STUDENTOV` bi moral biti `integer`. 
+- Uporabimo funkcije iz paketa `readr` za pretvorbo stolpcev iz nizov
 -
 ```r
-> tabela <- podatki[!is.na(podatki$STUDIJSKO_LETO),]
-```
-- Nadomesti nize "-" z ```NA``` v stolpcu ```ST_STUDENTOV```
--
-```r
-> tabela$ST_STUDENTOV[tabela$ST_STUDENTOV == "-"] <- NA
-```
-- Pretvori stolpec ```ST_STUDENTOV``` v ```integer```
--
-```r
-> tabela$ST_STUDENTOV <- as.integer(tabela$ST_STUDENTOV)
+zdruzena$ST_STUDENTOV <- parse_integer(zdruzena$ST_STUDENTOV)
 ```
 
 ## Relacijski model
@@ -188,7 +241,15 @@ $R \bowtie S = \pi_{\scriptsize shema(R) \cup shema(S)}( \sigma_{\scriptsize R.a
 
 ## Popravljanje stolpca ```LETNIK``` {.smaller}
 
-- Obstoječa imena v stolpcu ```LETNIK``` 
+## Obdelava podatkov {.smaller}
+
+- V stolpcu `LETNIK` bi želeli krajši zapis
+- Poglejmo kaj imamo v stolpcu (histogram)
+-
+```r
+table(podatki$LETNIK)
+```
+- Obstoječa imena v stolpcu ```LETNIK```
 -
 ```r
 > imena <- c("1. letnik", "2. letnik", "3. letnik", 
@@ -209,7 +270,7 @@ $R \bowtie S = \pi_{\scriptsize shema(R) \cup shema(S)}( \sigma_{\scriptsize R.a
 -
 ```r
 > require(dplyr)
-> zdruzena <- inner_join(tabela, tab2, c("LETNIK"="ime"))
+> zdruzena <- podatki %>% inner_join(tab2, c("LETNIK"="ime"))
 ```
 
 ## Poizvedbe {.smaller}
@@ -222,14 +283,19 @@ $R \bowtie S = \pi_{\scriptsize shema(R) \cup shema(S)}( \sigma_{\scriptsize R.a
 > filter(zdruzena, SPOL=="Ženske")
 ```
 - Ekvivalentno opratorju ```[pogoj,]```
+- Bolj po dplyr-jevsko
+- 
+```r
+> zdruzena %>% filter(SPOL=="Ženske")
+```
 - Vse vrstice, v katerih so ženske vpisane po letu 2011
 -
 ```r
-> filter(zdruzena, SPOL=="Ženske" & STUDIJSKO_LETO > 2011)
+> zdruzena %>% filter(SPOL=="Ženske" & STUDIJSKO_LETO > 2011)
 ```
 - Namesto operatorja "&" lahko pogoje ločimo z vejico
 ```r
-> filter(zdruzena, SPOL=="Ženske", STUDIJSKO_LETO > 2011)
+> zdruzena %>% filter(SPOL=="Ženske", STUDIJSKO_LETO > 2011)
 ```
 
 ## Operacija ```arrange```
@@ -237,12 +303,12 @@ $R \bowtie S = \pi_{\scriptsize shema(R) \cup shema(S)}( \sigma_{\scriptsize R.a
 - Uredi po stolpcu ```ST_STUDENTOV```
 - 
 ```r
-> arrange(zdruzena, ST_STUDENTOV)
+> zdruzena %>% arrange(ST_STUDENTOV)
 ```
 - Uredi po stolpcih ```STUDIJSKO_LETO``` in potem po stolpcu ```ST_STUDENTOV```, in sicer padajoče
 -
 ```r
-> arrange(zdruzena, STUDIJSKO_LETO, desc(ST_STUDENTOV))
+> zdruzena %>% arrange(STUDIJSKO_LETO, desc(ST_STUDENTOV))
 ```
 
 ## Operaciji ```select``` in ```rename```
@@ -250,17 +316,17 @@ $R \bowtie S = \pi_{\scriptsize shema(R) \cup shema(S)}( \sigma_{\scriptsize R.a
 - Izberi samo stolpce ```STUDIJSKO_LETO```, ```ST_STUDENTOV``` in ```SPOL``` 
 -
 ```r
-> select(zdruzena, STUDIJSKO_LETO, ST_STUDENTOV, SPOL)
+> zdruzena %>% select(STUDIJSKO_LETO, ST_STUDENTOV, SPOL)
 ```
 - Ob tem še preimenuj stolpec ```STUDIJSKO_LETO``` v ```LETO```.
 -
 ```r
-> select(zdruzena, LETO=STUDIJSKO_LETO, ST_STUDENTOV, SPOL)
+> zdruzena %>% select(LETO=STUDIJSKO_LETO, ST_STUDENTOV, SPOL)
 ```
 - Preimenuj stolpec ```STUDIJSKO_LETO``` v ```LETO```
 -
 ```r
-> rename(zdruzena, LETO=STUDIJSKO_LETO)
+> zdruzena %>% rename(LETO=STUDIJSKO_LETO)
 ```
 
 ## Združevanje po vrsticah {.smaller}
@@ -295,9 +361,9 @@ $R \bowtie S = \pi_{\scriptsize shema(R) \cup shema(S)}( \sigma_{\scriptsize R.a
 - Koliko žensk in koliko moških je bilo vpisanih na posameznih vrstah študija na univerzi?
 -
 ```r
-> tmp1 <- zdruzena %>% 
-   filter(VISOKOSOLSKI_ZAVOD == "Univerze - SKUPAJ") %>%
-   select(VRSTA_IZOBRAZEVANJA, SPOL, ST_STUDENTOV) 
+> tmp1 <- zdruzena 
+      %>% filter(VISOKOSOLSKI_ZAVOD == "Univerze - SKUPAJ") 
+      %>% select(VRSTA_IZOBRAZEVANJA, SPOL, ST_STUDENTOV) 
 ```
 
 ## Združevanje {.smaller}
@@ -305,27 +371,27 @@ $R \bowtie S = \pi_{\scriptsize shema(R) \cup shema(S)}( \sigma_{\scriptsize R.a
 - Grupiramo in seštejemo za moške.
 -
 ```r
-> tmp2 <- tmp1 %>% 
-   filter(SPOL=="Moški") %>% 
-   group_by(VRSTA_IZOBRAZEVANJA) %>%
-   summarize(Moški=sum(ST_STUDENTOV, na.rm=TRUE))
+> tmp2 <- tmp1 
+      %>% filter(SPOL=="Moški") 
+      %>% group_by(VRSTA_IZOBRAZEVANJA) 
+      %>% summarize(Moški=sum(ST_STUDENTOV, na.rm=TRUE))
 ```
 - Grupiramo in seštejemo za ženske.
 -
 ```r
-> tmp3 <- tmp1 %>% 
-  filter(SPOL=="Ženske") %>% 
-  group_by(VRSTA_IZOBRAZEVANJA) %>%
-  summarize(Ženske=sum(ST_STUDENTOV, na.rm=TRUE))
+> tmp3 <- tmp1 
+     %>% filter(SPOL=="Ženske") 
+     %>% group_by(VRSTA_IZOBRAZEVANJA) 
+     %>% summarize(Ženske=sum(ST_STUDENTOV, na.rm=TRUE))
 ```
 - Povežemo obe tabeli preko združitve (join)
 -
 ```r
-> tmp4 <- tmp2 %>% 
-        left_join(tmp3) %>%
-        select(VRSTA_IZOBRAZEVANJA, Moški, Ženske) %>%
-        arrange(VRSTA_IZOBRAZEVANJA) %>%
-        mutate(faktor=round(Ženske/Moški, 2))
+> tmp4 <- tmp2 
+        %>% left_join(tmp3) 
+        %>% select(VRSTA_IZOBRAZEVANJA, Moški, Ženske) 
+        %>% arrange(VRSTA_IZOBRAZEVANJA) 
+        %>% mutate(razmerje=round(Ženske/Moški, 2))
 ```
 
 ## Organizacija podatkov
