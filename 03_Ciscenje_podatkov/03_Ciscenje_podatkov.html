@@ -354,31 +354,33 @@
 <li>Vrni tabelo z vrsticami, ki pripadajo ženskam</li>
 <li><pre class = 'prettyprint lang-r'>&gt; filter(zdruzena, SPOL==&quot;Ženske&quot;)</pre></li>
 <li>Ekvivalentno opratorju <code>[pogoj,]</code></li>
+<li>Bolj po dplyr-jevsko</li>
+<li><pre class = 'prettyprint lang-r'>&gt; zdruzena %&gt;% filter(SPOL==&quot;Ženske&quot;)</pre></li>
 <li>Vse vrstice, v katerih so ženske vpisane po letu 2011</li>
-<li><pre class = 'prettyprint lang-r'>&gt; filter(zdruzena, SPOL==&quot;Ženske&quot; &amp; STUDIJSKO_LETO &gt; 2011)</pre></li>
+<li><pre class = 'prettyprint lang-r'>&gt; zdruzena %&gt;% filter(SPOL==&quot;Ženske&quot; &amp; STUDIJSKO_LETO &gt; 2011)</pre></li>
 <li><p>Namesto operatorja &quot;&amp;&quot; lahko pogoje ločimo z vejico</p>
 
-<pre class = 'prettyprint lang-r'>&gt; filter(zdruzena, SPOL==&quot;Ženske&quot;, STUDIJSKO_LETO &gt; 2011)</pre></li>
+<pre class = 'prettyprint lang-r'>&gt; zdruzena %&gt;% filter(SPOL==&quot;Ženske&quot;, STUDIJSKO_LETO &gt; 2011)</pre></li>
 </ul>
 
 </article></slide><slide class=''><hgroup><h2>Operacija <code>arrange</code></h2></hgroup><article  id="operacija-arrange">
 
 <ul class = 'build'>
 <li>Uredi po stolpcu <code>ST_STUDENTOV</code></li>
-<li><pre class = 'prettyprint lang-r'>&gt; arrange(zdruzena, ST_STUDENTOV)</pre></li>
+<li><pre class = 'prettyprint lang-r'>&gt; zdruzena %&gt;% arrange(ST_STUDENTOV)</pre></li>
 <li>Uredi po stolpcih <code>STUDIJSKO_LETO</code> in potem po stolpcu <code>ST_STUDENTOV</code>, in sicer padajoče</li>
-<li><pre class = 'prettyprint lang-r'>&gt; arrange(zdruzena, STUDIJSKO_LETO, desc(ST_STUDENTOV))</pre></li>
+<li><pre class = 'prettyprint lang-r'>&gt; zdruzena %&gt;% arrange(STUDIJSKO_LETO, desc(ST_STUDENTOV))</pre></li>
 </ul>
 
 </article></slide><slide class=''><hgroup><h2>Operaciji <code>select</code> in <code>rename</code></h2></hgroup><article  id="operaciji-select-in-rename">
 
 <ul class = 'build'>
 <li>Izberi samo stolpce <code>STUDIJSKO_LETO</code>, <code>ST_STUDENTOV</code> in <code>SPOL</code></li>
-<li><pre class = 'prettyprint lang-r'>&gt; select(zdruzena, STUDIJSKO_LETO, ST_STUDENTOV, SPOL)</pre></li>
+<li><pre class = 'prettyprint lang-r'>&gt; zdruzena %&gt;% select(STUDIJSKO_LETO, ST_STUDENTOV, SPOL)</pre></li>
 <li>Ob tem še preimenuj stolpec <code>STUDIJSKO_LETO</code> v <code>LETO</code>.</li>
-<li><pre class = 'prettyprint lang-r'>&gt; select(zdruzena, LETO=STUDIJSKO_LETO, ST_STUDENTOV, SPOL)</pre></li>
+<li><pre class = 'prettyprint lang-r'>&gt; zdruzena %&gt;% select(LETO=STUDIJSKO_LETO, ST_STUDENTOV, SPOL)</pre></li>
 <li>Preimenuj stolpec <code>STUDIJSKO_LETO</code> v <code>LETO</code></li>
-<li><pre class = 'prettyprint lang-r'>&gt; rename(zdruzena, LETO=STUDIJSKO_LETO)</pre></li>
+<li><pre class = 'prettyprint lang-r'>&gt; zdruzena %&gt;% rename(LETO=STUDIJSKO_LETO)</pre></li>
 </ul>
 
 </article></slide><slide class=''><hgroup><h2>Združevanje po vrsticah</h2></hgroup><article  id="zdruzevanje-po-vrsticah" class="smaller">
@@ -405,8 +407,8 @@ group_by(SPOL, STUDIJSKO_LETO) %&gt;%
 summarize(VPIS=sum(ST_STUDENTOV, na.rm=TRUE))</pre></li>
 <li>Koliko žensk in koliko moških je bilo vpisanih na posameznih vrstah študija na univerzi?</li>
 <li><pre class = 'prettyprint lang-r'>&gt; tmp1 &lt;- zdruzena %&gt;% 
-   filter(VISOKOSOLSKI_ZAVOD == &quot;Univerze - SKUPAJ&quot;) %&gt;%
-   select(VRSTA_IZOBRAZEVANJA, SPOL, ST_STUDENTOV) </pre></li>
+  filter(VISOKOSOLSKI_ZAVOD == &quot;Univerze - SKUPAJ&quot;) %&gt;% 
+  select(VRSTA_IZOBRAZEVANJA, SPOL, ST_STUDENTOV) </pre></li>
 </ul>
 
 </article></slide><slide class=''><hgroup><h2>Združevanje</h2></hgroup><article  id="zdruzevanje-1" class="smaller">
@@ -414,20 +416,20 @@ summarize(VPIS=sum(ST_STUDENTOV, na.rm=TRUE))</pre></li>
 <ul class = 'build'>
 <li>Grupiramo in seštejemo za moške.</li>
 <li><pre class = 'prettyprint lang-r'>&gt; tmp2 &lt;- tmp1 %&gt;% 
-   filter(SPOL==&quot;Moški&quot;) %&gt;% 
-   group_by(VRSTA_IZOBRAZEVANJA) %&gt;%
-   summarize(Moški=sum(ST_STUDENTOV, na.rm=TRUE))</pre></li>
+  filter(SPOL==&quot;Moški&quot;) %&gt;% 
+  group_by(VRSTA_IZOBRAZEVANJA) %&gt;% 
+  summarize(Moški=sum(ST_STUDENTOV, na.rm=TRUE))</pre></li>
 <li>Grupiramo in seštejemo za ženske.</li>
 <li><pre class = 'prettyprint lang-r'>&gt; tmp3 &lt;- tmp1 %&gt;% 
   filter(SPOL==&quot;Ženske&quot;) %&gt;% 
-  group_by(VRSTA_IZOBRAZEVANJA) %&gt;%
+  group_by(VRSTA_IZOBRAZEVANJA) %&gt;% 
   summarize(Ženske=sum(ST_STUDENTOV, na.rm=TRUE))</pre></li>
 <li>Povežemo obe tabeli preko združitve (join)</li>
 <li><pre class = 'prettyprint lang-r'>&gt; tmp4 &lt;- tmp2 %&gt;% 
-    left_join(tmp3) %&gt;%
-    select(VRSTA_IZOBRAZEVANJA, Moški, Ženske) %&gt;%
-    arrange(VRSTA_IZOBRAZEVANJA) %&gt;%
-    mutate(faktor=round(Ženske/Moški, 2))</pre></li>
+    left_join(tmp3) %&gt;% 
+    select(VRSTA_IZOBRAZEVANJA, Moški, Ženske) %&gt;% 
+    arrange(VRSTA_IZOBRAZEVANJA) %&gt;% 
+    mutate(razmerje=round(Ženske/Moški, 2))</pre></li>
 </ul>
 
 </article></slide><slide class=''><hgroup><h2>Organizacija podatkov</h2></hgroup><article  id="organizacija-podatkov">

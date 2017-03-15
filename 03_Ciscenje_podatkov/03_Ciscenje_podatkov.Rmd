@@ -361,9 +361,9 @@ table(podatki$LETNIK)
 - Koliko žensk in koliko moških je bilo vpisanih na posameznih vrstah študija na univerzi?
 -
 ```r
-> tmp1 <- zdruzena 
-      %>% filter(VISOKOSOLSKI_ZAVOD == "Univerze - SKUPAJ") 
-      %>% select(VRSTA_IZOBRAZEVANJA, SPOL, ST_STUDENTOV) 
+> tmp1 <- zdruzena %>% 
+      filter(VISOKOSOLSKI_ZAVOD == "Univerze - SKUPAJ") %>% 
+      select(VRSTA_IZOBRAZEVANJA, SPOL, ST_STUDENTOV) 
 ```
 
 ## Združevanje {.smaller}
@@ -371,27 +371,27 @@ table(podatki$LETNIK)
 - Grupiramo in seštejemo za moške.
 -
 ```r
-> tmp2 <- tmp1 
-      %>% filter(SPOL=="Moški") 
-      %>% group_by(VRSTA_IZOBRAZEVANJA) 
-      %>% summarize(Moški=sum(ST_STUDENTOV, na.rm=TRUE))
+> tmp2 <- tmp1 %>% 
+      filter(SPOL=="Moški") %>% 
+      group_by(VRSTA_IZOBRAZEVANJA) %>% 
+      summarize(Moški=sum(ST_STUDENTOV, na.rm=TRUE))
 ```
 - Grupiramo in seštejemo za ženske.
 -
 ```r
-> tmp3 <- tmp1 
-     %>% filter(SPOL=="Ženske") 
-     %>% group_by(VRSTA_IZOBRAZEVANJA) 
-     %>% summarize(Ženske=sum(ST_STUDENTOV, na.rm=TRUE))
+> tmp3 <- tmp1 %>% 
+      filter(SPOL=="Ženske") %>% 
+      group_by(VRSTA_IZOBRAZEVANJA) %>% 
+      summarize(Ženske=sum(ST_STUDENTOV, na.rm=TRUE))
 ```
 - Povežemo obe tabeli preko združitve (join)
 -
 ```r
-> tmp4 <- tmp2 
-        %>% left_join(tmp3) 
-        %>% select(VRSTA_IZOBRAZEVANJA, Moški, Ženske) 
-        %>% arrange(VRSTA_IZOBRAZEVANJA) 
-        %>% mutate(razmerje=round(Ženske/Moški, 2))
+> tmp4 <- tmp2 %>% 
+        left_join(tmp3) %>% 
+        select(VRSTA_IZOBRAZEVANJA, Moški, Ženske) %>% 
+        arrange(VRSTA_IZOBRAZEVANJA) %>% 
+        mutate(razmerje=round(Ženske/Moški, 2))
 ```
 
 ## Organizacija podatkov
