@@ -51,9 +51,13 @@ uvoz <- read_csv2("0955201ss.csv",
 View(uvoz)
 
 # Zaradi 'hierarhičnega uvoza' bi radi, da se vsi dimenzijski stolpci ponavljajo (razen STUDIJSKO_LETO !)
-podatki <- uvoz %>% fill(1:5) %>% drop_na(STUDIJSKO_LETO)
+
+podatki <- uvoz %>% 
+           fill(1:5) %>% 
+           drop_na(STUDIJSKO_LETO)
 
 podatki %>% View
+
 
 # Preverimo ustreznost tipov
 sapply(podatki, class)
@@ -62,6 +66,7 @@ sapply(podatki, class)
 podatki$ST_STUDENTOV <- parse_integer(podatki$ST_STUDENTOV)
 
 sapply(podatki, class)
+
 podatki %>% View
 
 # Obdelava po stolpcih. Stolpec LETNIK

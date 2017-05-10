@@ -245,7 +245,7 @@ r <- POST(url, body = body, encode = "json")
 - Pregled zahtevka
 -
 ```r
-POST(url, body = body, encode = "json", verbose())
+POST(url, body = body, encode = "form", verbose())
 ```
 
 ## Format XML

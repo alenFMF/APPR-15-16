@@ -42,6 +42,8 @@ imena <- stran %>%
 ## Pomožni funkciji 'indeks' in 'prvi'
 indeks <- function(x, i) {if(length(x) >= i) x[[i]] else ""}
 prvi <- . %>% indeks(1)
+  
+#prvi <- function(x) {index(x, 1)}
 
 ## Pridobitev id številk podstrani
 id <- stran %>% 
@@ -56,14 +58,16 @@ email <- stran %>%
   html_nodes(xpath = "//table[@class='directory-list']//td[not(@class)]") %>% 
   sapply(toString) %>%
   strapplyc("mailto:([^\\\"]+)") %>%
-  sapply(prvi)
+  sapply(prvi) %>% 
+  sub("^([^%]+)(%20\\(?(at)+\\)?%20)([^%]+)", "\\1@\\4", .)
 
 ## Pridobitev telefonskih številk
 telefonska <- stran %>% 
   html_nodes(xpath = "//table[@class='directory-list']//td[not(@class)]") %>% 
   sapply(toString) %>%
-  strapplyc("\\+386 1 4766 [0-9 ]+") %>%
+  strapplyc("\\+386[0-9 ]*[0-9]+") %>%
   sapply(prvi)
+
 
 ## Pridobitev internih številk
 interna <- stran %>% 
@@ -93,6 +97,7 @@ url0 <- "http://prostor3.gov.si/iokno/iokno.jsp"
 ## Podatki v iframe
 url <- "http://prostor3.gov.si/iokno/iskalnik_naslovi.jsp?ssid=255B1E35BFD50942E05018AC40D32BF1&user=null"
 
+url <- "http://prostor3.gov.si/iokno/iskalnik_naslovi.jsp?ssid=256173CBFDA77837E05018AC40D36FBA&user=null"
 ## Seja (ne želimo se ukvarjati s cookie-ji)
 seja <- html_session(url)
 ## Pridobitev forme
@@ -100,13 +105,17 @@ forma <- (seja %>% read_html() %>% html_form())[[1]]
 ## Izpolnjevanje polj v formi
 formaNova <- set_values(forma, 
                         'NASELJE'='Ljubljana', 
-                        'ULICA'= 'tržaška')
+                        'ULICA'= 'jadranska')
 ## Pošiljanje forme
 seja2 <- submit_form(seja, formaNova)                        
                    
 ## Obdelava rezultatov
 stran <- seja2 %>% read_html() 
-tabela1 <- stran %>% html_nodes(xpath="//table[@id='naslovi']") %>% html_table()
+tabela1 <- stran %>% html_nodes(xpath="//table[@id='naslovi']") %>% 
+      html_table() %>%
+      .[[1]]
+names(tabela1) <- tabela1[1,]
+tabela1 <- tabela1[-1,]
 
 ## Pridobivanje imena ulice
 ulica <- stran %>% 
@@ -139,6 +148,7 @@ y <- rezultati %>% sapply(. %>% indeks(2)) %>% as.integer()
 ## Končana razpredelnica
 podatki <- data.frame(Ulica=ulica, Stevilka=stevilkeUlic, X=x, Y=y)
 
+podatki <- tabela1 %>% mutate(X=x, Y=y) %>% .[-6]
 
 ##########################
 ## Primer 4: Razpoložljive zaposlitve na zavodu za zaposlovanje
@@ -243,7 +253,7 @@ glava <- function(niz) {
 
 ## Pridobivanje podatkov iz API na QANDL
 r <- GET("https://www.quandl.com/api/v3/datasets/LBMA/GOLD.json")
-text <- content(r, "text")
+# text <- content(r, "text")
 
 ## Branje iz formata JSON
 data <- fromJSON(content(r, "text"))

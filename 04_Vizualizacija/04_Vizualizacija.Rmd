@@ -128,7 +128,8 @@ ggplot(data=Orange, aes(x=circumference, y=age)) + geom_point() + facet_grid(~Tr
 
 ```{r}
 levels(Orange$Tree) <- sort(levels(Orange$Tree))
-ggplot(data=Orange, aes(x=circumference, y=age)) + geom_point() + geom_line(col="red") + facet_wrap(~Tree, ncol=2) 
+ggplot(data=Orange, aes(x=circumference, y=age)) + geom_point() +
+  geom_line(col="red") + facet_wrap(~Tree, ncol=2) 
 ```
 
 ## Primeri {.smaller}
@@ -141,6 +142,11 @@ ggplot(data=Orange, aes(x=circumference, y=age, col=Tree))  + geom_line()
 
 ```{r}
 head(iris)
+```
+
+## Primeri {.smaller}
+
+```{r}
 ggplot(data=iris, aes(x=Petal.Length, fill=Species))  + geom_histogram()
 ```
 
@@ -159,6 +165,7 @@ ggplot(data=iris, aes(x=Petal.Length, fill=Species))  + geom_histogram(color="bl
 ## Primeri {.smaller}
 
 ```{r}
+require(ggplot2movies)
 head(movies)
 ```
 
@@ -203,43 +210,58 @@ ggplot(data=myMovies, aes(x=Type, fill=factor(Short)))  + geom_bar(position="dod
 
 ## Primeri {.smaller}
 
-```{r}
+```{r warning=FALSE, echo=FALSE}
 ggplot(data=myMovies, aes(x=Type, fill=factor(Short)))  + geom_bar(position="fill") 
 ```
 
 ## Primeri {.smaller}
 
-```{r}
+```{r warning=FALSE}
 ggplot(data=myMovies, aes(x=Type, y=Budget))  + geom_boxplot() 
 ```
 
 ## Primeri {.smaller}
 
-```{r}
+```{r warning=FALSE}
 ggplot(data=myMovies, aes(x=Type, y=Budget))  + geom_boxplot() + scale_y_log10()
 ```
 
 ## Primeri {.smaller}
 
-```{r}
-ggplot(data=myMovies, aes(x=Type, y=Budget))  + geom_boxplot() + scale_y_log10() + geom_point()
+```{r warning=FALSE}
+ggplot(data=myMovies, aes(x=Type, y=Budget))  + geom_boxplot() +
+  scale_y_log10() + geom_point()
 ```
 
 ## Primeri {.smaller}
 
-```{r}
+```{r warning=FALSE}
+ggplot(data=myMovies, aes(x=Type, y=Budget))  + geom_jitter() +
+  geom_boxplot(alpha=I(0.6)) + scale_y_log10() 
+```
+
+## Primeri {.smaller}
+
+```{r warning=FALSE}
 ggplot(data=myMovies, aes(x=Type, y=Budget))  + geom_jitter() + geom_boxplot(alpha=I(0.6)) + scale_y_log10() 
 ```
 
+## Balončki {.smaller}
+
+```{r warning=FALSE}
+ggplot(data=myMovies, aes(x=Year, y=Type, size=Budget)) + geom_point()
+```
+
+
 ## Primeri {.smaller}
 
-```{r}
-ggplot(data=myMovies, aes(x=Type, y=Budget))  + geom_jitter() + geom_boxplot(alpha=I(0.6)) + scale_y_log10() 
+```{r warning=FALSE}
+head(ToothGrowth)
 ```
 
 ## Primeri {.smaller}
 
-```{r}
+```{r warning=FALSE}
 ggplot(data=ToothGrowth, aes(x=dose, y=len))  + geom_point() 
 ```
 
@@ -251,20 +273,69 @@ ggplot(data=ToothGrowth, aes(x=dose, y=len, col=supp))  + geom_point()
 
 ## Primeri {.smaller}
 
-```{r}
-ggplot(data=ToothGrowth, aes(x=dose, y=len, col=supp))  + geom_point() + facet_grid(.~supp) 
+```{r warning=FALSE}
+ggplot(data=ToothGrowth, aes(x=dose, y=len, col=supp))  + geom_point() +
+  facet_grid(.~supp) 
+```
+
+## Primeri {.smaller}
+
+```{r warning=FALSE}
+ggplot(data=ToothGrowth, aes(x=dose, y=len, col=supp))  + geom_point() +
+  facet_grid(.~supp) + stat_smooth()
+```
+
+## Primeri {.smaller}
+
+```{r warning=FALSE}
+ggplot(data=ToothGrowth, aes(x=dose, y=len, col=supp))  + geom_point() + 
+  facet_grid(.~supp) + stat_smooth(method="lm")
 ```
 
 ## Primeri {.smaller}
 
 ```{r}
-ggplot(data=ToothGrowth, aes(x=dose, y=len, col=supp))  + geom_point() + facet_grid(.~supp) + stat_smooth()
+head(economics)
 ```
 
 ## Primeri {.smaller}
 
 ```{r}
-ggplot(data=ToothGrowth, aes(x=dose, y=len, col=supp))  + geom_point() + facet_grid(.~supp) + stat_smooth(method = "lm")
-````
+ggplot(data=economics, aes(x=date, y=unemploy)) + geom_line()
+```
+
+## Primeri {.smaller}
+
+```{r warning=FALSE}
+myMovies$RoundYear <- signif(myMovies$Year, digits = 3)
+ggplot(data=myMovies,aes(Budget)) + geom_histogram(binwith=1) + 
+  facet_grid(.~Type)+ scale_x_log10()
+```
+
+## Primeri {.smaller}
+
+```{r warning=FALSE}
+ggplot(data=myMovies,aes(Budget)) + geom_histogram(binwith=1) + 
+  facet_grid(Type~.) + scale_x_log10()
+```
+
+## Primeri {.smaller}
+
+```{r warning=FALSE}
+ggplot(data=myMovies,aes(Budget)) + geom_histogram(binwith=1) + facet_grid(RoundYear~Type) + scale_x_log10()
+```
+
+## Primeri {.smaller}
+
+```{r warning=FALSE}
+ggplot(data=subset(myMovies, RoundYear>1980), aes(Budget)) + 
+  geom_histogram(binwith=1) + facet_grid(.~Type+RoundYear) + 
+  scale_x_log10()
+```
+
+
+
+
+
 
 
