@@ -52,6 +52,7 @@ A             # R loči velike in male črke
 c(10, 12, 5)   # konstrukcija vektorja iz števil
 
 v <- c(2, 3, 4)  # združevanje vektorjev
+v
 c(1, v, 5)
 
 # TIPI IN PRETVARJANJE
