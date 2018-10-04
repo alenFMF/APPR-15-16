@@ -8,22 +8,23 @@ framework: io2012
 
 ## Analiza podatkov
 
-- Potrebe po *podatkovnih analitikih* (ang. data scientist) strmo naraščajo
-- <img src="viri/job-trends.png" width="600px" float=center>
+- Potrebe po *podatkovnih analitikih* (podatkovni inženir, ang. data scientist) strmo naraščajo
+- <img src="viri/job-trends.png" width="700px" float=center>
 
 ## Kdo rabi podatkovne analitike?
 
-- finančni sektor (bolj v tujini)
-- nova hitrorastoča start-up podjetja temelječa na informacijskih rešitvah 
+- Finančni sektor (banke, zavarovalnice, fintech, ...)
+- Nova hitro rastoča start-up podjetja temelječa na informacijskih rešitvah: 
     - deljena ekonomija: Uber, Airbnb, ...
-    - spletni marketing: Google, Facebook
-    - internet stvari, velika podatkovja, mobilne aplikacije
-- podatkovno-krmiljena podjetja (ang. data driven)
+    - spletni marketing: Google, Facebook, ...
+    - internet stvari, velika podatkovja, mobilne aplikacije, veriženje blokov, ...
+- Podatkovno-krmiljena podjetja (ang. data driven), digitalna transformacija, ...
+- AI - umetna inteligenca, strojno učenje
 
-## Kaj delajo podatkovni analitiki
+## Kaj delajo podatkovni analitiki?
 
-- Postavljajo cilje, izive, hipoteze
-- Definirajo potrebne podatke
+- Postavljajo cilje, izzive, hipoteze
+- Definirajo vrste potrebnih podatkov
 - Ugotavljajo, kakšne podatke lahko dobijo
 - Pridobivajo podatke
 - Čistijo podatke
@@ -32,22 +33,22 @@ framework: io2012
 - Interpretirajo rezultate
 - Kritično vrednotijo rezultate
 - Iz rezultatov potegnejo zaključke in jih ustrezno zapišejo
-- Poskrbijo ponovljivost analiz (koda)
-- Distribuirajo rezultate drugim
+- Poskrbijo za ponovljivost analiz (dokumentacija, koda, verzije, ...)
+- Objavijo rezultate in jih distribuirajo
 
 ## Kompetence podatkovnih analitikov
 
-- dobro poznavanje domene raziskav
-- dobro poznavanje matematike in statistike
-- dobro poznavanje programerskih veščin (hackerski duh)
+- Dobro poznavanje domene raziskav
+- Dobro poznavanje matematike in statistike
+- Dobro poznavanje programerskih veščin (t.i. hackerski duh)
 - <img src="viri/three-circles.png" width="350px" float=center>
 - http://drewconway.com
 
 ## Orodja in ponovljive analize
 
-- github, git - shranjevanje verzij kode in podatkov
+- Github (github.com), GIT - shranjevanje verzij kode in podatkov
+- R - programski jezik
 - RStudio - razvojno okolje, programiranje, dokumentiranje
-    - R - programski jezik
     - različni paketi v R za analizo in vizualizacijo podatkov
     - RMarkdown - dokumentiranje in izdelava prezentacij
     - Shiny - izdelava interaktivnih aplikacij
@@ -55,35 +56,40 @@ framework: io2012
 ## Programski jezik R
 
 - Odprtokodna rešitev, prosto dostopen
-- Ponuja obsežno množico orodij za podporo vseh nalog podatkovne analize
-- RStudio - eno od najboljših razvojnih okolij
+- Ponuja obsežno množico orodij za podporo vsem nalogam podatkovne analize
+- RStudio - eno izmed najboljših razvojnih okolij za podatkovno analitiko
 - Velika skupnost, ki ga podpira
 - Dober sistem paketov
 - Alternative: npr. Python in knjižnica Pandas.
-- Lahko si ga predstavljamo kot programsko varianto orodij, kot je Excel
+- Lahko si ga predstavljamo kot programsko varianto orodij za obdelavo razpredelnic, kot je Excel
 
-## Namestitev R(studio)
+## Namestitev R + RStudio
 
 - Osnovno okolje (RConsole): https://www.r-project.org/
 - RStudio: https://www.rstudio.com/
     - konzola z ukazno vrstico (podobno kot IDLE v Pyhtonu)
     - projektno okolje (pregled datotek, naloženih spremenljiv, upravljanje paketov, ...)
   
-## Osnovni objekti{.smaller}
+## Osnovni podatkovni tipi {.smaller}
 
-- Osnovni podatkovni tipi:
-    - *character* - nizi
-    - *numeric* - realna števila 
-    - *integer* - cela števila
-    - *complex* - kompleksna števila
-    - *logical* - logične vrednosti (TRUE/FALSE)
-- Sestavljeni podatkovni tipi
-    - *vector* - vektorji - tabele objektov istih tipov
-        - *matrix* - matrike - v resnici poseben tip vektorjev
-        - *array* - večdimenzionalne matrike
-        - *factor* - vektorji kategoričnih spremenljivk
-    - *list* - seznami - lahko vsebujejo objekte različnih podatkovnih tipov
-    - *data.frame* - podatkovne tabel s poimenovanimi stolpci kot vektorji (standardna oblika podatkov za izvajanje analiz)
+- Vsak podatkovni objekt, ki ga lahko priredimo v spremenljivko ima tip (razred)
+
+- ```character``` - nizi (```"To je besedilo", 'to je niz'```)
+- ```numeric``` - realna števila (```1.2, -3.55, 1.1e-3```)
+- ```integer``` - cela števila (```1, -20```)
+- ```complex``` - kompleksna števila (```2 + 3i```)
+- ```logical``` - logične vrednosti (```TRUE```, ```FALSE```)
+
+## Sestavljeni podatkovni tipi
+- ```vector``` - vektorji so tabele (tabelarični seznami) objektov istega osnovnega tipa
+- Minimalni uporabni objekti so vektorji
+- Tudi če vnesemo število ```1```, je to vektor tipa ```numeric``` dolžine 1
+- Izpeljanke tipa ```vector```
+    - ```matrix``` - matrike, vektorji s podanim razbitjem po vrsticah
+    - ```array``` - večdimenzionalne matrike/tabele
+    - ```factor``` - vektorji kategoričnih spremenljivk (omejen nabor vrednosti)
+- ```list``` - seznami lahko vsebujejo objekte različnih podatkovnih tipov
+- ```data.frame``` - razpredelnice - dvo-dimenzionalne podatkovne tabele s poimenovanimi stolpci kot vektorji (standardna oblika podatkov za izvajanje analiz)
 
 ## Osnovni objekti in izpis
 
@@ -165,24 +171,34 @@ Error: object 'A' not found
 ```
 - 
 ```r
-> (v <- 1:20)
+> (v <- 1:20)   # prireditev z izpisom
  [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16
 [17] 17 18 19 20
 ```
-- V oglatih oklepajih naveden indeks začetnega člena v vrstici
-- Indeksiranje poteka od 1 dalje (v Pythonu od 0 dalje)
 - Z operatorjem dvopičje (```:```) ustvarimo vektor zaporednih števil
+- Z zapisom v oklepajih dosežemo prireditev in izpis
+- Izpis:
+    - V oglatih oklepajih je naveden indeks začetnega člena v vrstici
+    - Indeksiranje (številčenje) poteka od 1 dalje (v Pythonu od 0 dalje)
 -
 ```r
 > 5:2
 [1] 5 4 3 2
 ```
-- S funkcijo ```c(...)``` sestavljamo vektorje
+
+## Vektorji {.smaller}
+- S funkcijo ```c(...)``` sestavljamo vektorje (ang. concatenate)
 -
 ```r
-> c(10, 12, 5)
+> c(10, 12, 5)   # konstrukcija vektorja iz števil
 [1] 10 12  5
 ```
+```r
+> v <- c(2, 3, 4)
+> c(1, v, 5)   # združevanje vektorjev
+[1] 10 12  5
+```
+- eno število (en element) je že vektor
 
 ## Tipi in pretvarjanje {.smaller}
 
@@ -192,18 +208,18 @@ Error: object 'A' not found
 > x <- 1:5
 > class(x)
 [1] "integer"
-> is.numeric(x)
+> is.numeric(x)  # ali je 'x' tipa 'numeric'?
 [1] TRUE
-> is.character(x)
+> is.character(x) # ali je 'x' tipa 'character'?
 [1] FALSE
 ```
 - Funkcije oblike ```is.tip(...)``` služijo za preverjanje tipa
 - Pozor: pika je sestavni del imena funkcije (ni operator kot pri Pyhtonu)
 - 
 ```r
-> as.logical(x)
+> as.logical(x)    # pretvorba v vektor logičnih vrednosti
 [1] TRUE TRUE TRUE TRUE TRUE
-> as.character(x)
+> as.character(x)   # pretvorba v vektor nizov
 [1] "1" "2" "3" "4" "5"
 ```
 - Funkcije oblike ```as.tip(...)``` služijo za pretvarjanje med tipi
@@ -213,17 +229,17 @@ Error: object 'A' not found
 - Implicitne pretvorbe se zgodijo, ko pri ustvarjanju vektorjev mešamo tipe in je možno vse elemente pretvoriti v enoten tip
 - 
 ```r
-> c(1.3, "a")
+> c(1.3, "a")  # implicitna pretvorba v vektor nizov
 [1] "1.3" "a"  
-> c(TRUE, 5)
+> c(TRUE, 5)   # implicitna pretvorba v vektor števil
 [1] 1 5
-> c("a", "TRUE")
+> c("a", "TRUE")    # implicitna pretvorba v vektor nizov
 [1] "a"    "TRUE"
 ```
-- Nesmiselne eksplicitne pretvorbe vrnejo ```NA``` (oznaka za manjkajočo vrednost)
+- Nesmiselne pretvorbe vrnejo ```NA``` (oznaka za manjkajočo vrednost)
 -
 ```r
-> as.numeric(c("a", "b"))
+> as.numeric(c("a", "b"))   
 [1] NA NA
 Warning message:
 NAs introduced by coercion 
@@ -262,33 +278,33 @@ NAs introduced by coercion
 
 ## Logične vrednosti {.smaller}
 
-- ```TRUE```, ```FALSE``` in ```NA``` (v skrajšani obliki: ```T``` in ```F```)
+- ```TRUE```, ```FALSE``` in ```NA```
 - Operatorji negacija (```!```), konjunkcija (```&``` oz. ```&&```) ter disjunkcija (```|``` oz. ```||```)
 - 
 ```r
-> !T
+> !TRUE
 [1] FALSE
-> F || TRUE
+> FALSE || TRUE
 [1] TRUE
-> NA | T
+> NA | TRUE
 [1] TRUE
 ```
 - Primerjave vračajo logične vrednosti (```<```, ```>```, ```<=```, ```>=```, ```==```, ```!=```)
 -
 ```r
-> 1 != 2
+> 1 != 2   # ali je 1 različno od 2
 [1] TRUE
-> 10 > 5.5
+> 10 > 5.5  # ali je 10 strogo večje od 5.5
 [1] TRUE
 ```
 - Predikati oblike ```is.nekaj``` vračajo logične vrednosti
 -
 ```r
-> is.integer(1)
+> is.integer(1)    # ali je 1 celo število?
 [1] FALSE
-> is.finite(20)
+> is.finite(20)    # ali je 20 končna vrednost
 [1] TRUE
-> is.finite(Inf)
+> is.finite(Inf)    # 'Inf' predstavlja pozitivno neskončnost
 [1] FALSE
 ```
 
@@ -296,17 +312,17 @@ NAs introduced by coercion
 
 - 
 ```r
-> 1/0
+> 1/0      # deljenje 1 z 0 vrne neskončnost
 [1] Inf
 ```
 - 
 ```r
-> 10/Inf
+> 10/Inf   # deljenje z 0 vrne 0
 [1] 0
 ```
 - 
 ```r
-> Inf-Inf
+> Inf-Inf   # rezultat ni definiran (ni število)
 [1] NaN
 ```
 - 
@@ -328,69 +344,141 @@ In sqrt(-1) : NaNs produced
 - Krožno dopolnjevanje
 -
 ```r
-> 1:6 + c(1,2)
+> c(1,2) + c(3,4)   # seštevanje po komponentah
+[1] 4 6
+```
+-
+```r
+> 1:6 + c(1,2)  # drugi vektor je prekratek -> krožno dopolnjevanje
 [1] 2 4 4 6 6 8
-> 1:10 %% 3
+```
+-
+```r
+> 1:10 %% 3     # operator 'ostanek', krožno dopolnjevenje enega elementa 
  [1] 1 2 0 1 2 0 1 2 0 1
 ```
-- Indeksi ```[[]]```
 -
 ```r
-> v <- 1:10
-> v[[3]]
-[1] 3
+> 1:5 * c(2, 3) 
+Warning message:
+In 1:5 * c(2, 3) :
+  longer object length is not a multiple of shorter object length
 ```
-- Podzaporedja ```[]```
+
+## Operacije na vektorjih {.smaller}
+
+- Element na indeksu. Operator ```[[]]```
 -
 ```r
-> v[c(3,4)]
-[1] 3 4
+> v <- c("a", "b", "c", "d", "e")
+> v[[3]]    # element na mestu 3
+[1] "c"
+```
+- PAZI: indeksi se v R štejejo od 1 dalje (ne od 0)!
+
+- Podzaporedja. Operator ```[]```
+-
+```r
+> v[c(3,4)]   # podzaporedje iz 3. in 4. člena
+[1] "c" "d"
 ```
 - Negativni indeksi povejo, katere člene odstranimo
 -
 ```r
-> v[c(-1,-5)]
-[1]  2  3  4  6  7  8  9 10
+> v[c(-1,-5)]   # odstrani 1. in 5. člena
+[1] "b" "c" "d"
+```
+- Logični indeksi (logične maske - TRUE - ostane, FALSE - odpade)
+-
+```r
+> v[c(TRUE, FALSE)]   # lihi elementi (krožno dopolnjevanje, ki se lahko "ne izide")
+[1] "a" "c" "e"
 ```
 
 
 ## Atributi {.smaller}
 
 - Vektorju lahko nastavimo atribute
+- Atributi se obnašajo podobno kot atributi pri objektno orientiranem programiranju
 - 
 ```r
 > v <- 1:6
-> attr(v, "nekaj") <- c(1,2)
+> attr(v, "nekaj") <- c(1,2)   # prirejanje atributa 'nekaj'
+> attr(v, "drugi") <- "Drugi"
 > v
 [1] 1 2 3 4 5 6
 attr(,"nekaj")
 [1] 1 2
-> attributes(v)
+attr(,"drugi")
+[1] "Drugi"
+```
+- 
+```r
+> attributes(v)   # seznam atributov
 $nekaj
 [1] 1 2
+$drugi
+[1] "Drugi"
 ```
-- Vektorju lahko nastavimo imena (poseben atribut ```names```)
+- 
 ```r
-> v <- c(a=1, b=2, 3)
+> attributes(v)[[2]]   # drugi atribut iz seznama
+[1] "Drugi"
+```
+
+## Atribut ```names``` {.smaller}
+
+- Poseben atribut ```names``` - poimenovanje komponent
+-
+```r
+> v <- c(a=1, b=2, 3)  # poimenovanje komponent vektorja
 > v
 a b   
 1 2 3 
+```
+-
+```r
 > attributes(v)
 $names
 [1] "a" "b" "" 
+```
+-
+```r
+> v <- c(10, 20)
+> names(v) <- c("prvi", "drugi")
+> v
+ prvi drugi 
+   10    20 
+```
+
+## Atribut ```names``` {.smaller}
+
+- Uporaba pri sklicu na komponente
+-
+```r
+> v[["a"]]  # element poimenovan 'a'
+[1] 1
+```
+-
+```r
+> v[c("a", "b")]   # podzaporedje dobljeno preko imen komponent
+a b 
+1 2 
 ```
 
 ## Faktorji {.smaller}
 
 - Faktorji so vektorji z omejenim naborom vrednosti
-- Uporabljajo se za kategorične spremenljivke
+- Uporabljajo se za kategorične spremenljivke (npr. spol M/Ž, krvna skupina, ...)
 -
 ```r
 > v <- c("a", "b", "b", "a")
-> f <- factor(v)
+> f <- factor(v)   # ustvarjanje faktorja iz nabora komponent vektorja
 > f
 [1] a b b a
 Levels: a b
+> class(f)
+[1] "factor"
 ```
 - Reprezentacija:
 ```r
@@ -406,7 +494,6 @@ $levels
 $class
 [1] "factor"
 ```
-- Faktorji so vektorji z dodatnimi atributi, ki jih R ustrezno interpretira
 
 ## Matrike {.smaller}
 
@@ -415,7 +502,7 @@ $class
 ```r
 > a <- matrix(1:6, ncol = 3, nrow = 2)
 > a
-     [,1] [,2] [,3]
+         [,1] [,2] [,3]
 [1,]    1    3    5
 [2,]    2    4    6
 ```
@@ -432,9 +519,9 @@ $dim
 > v <- 1:6
 > class(v)
 [1] "integer"
-> attr(v, "dim") <- c(2,3)
+> attr(v, "dim") <- c(2,3)  # pretvorba vektorja v matriko dimenzije 2 x 3
 > v
-     [,1] [,2] [,3]
+         [,1] [,2] [,3]
 [1,]    1    3    5
 [2,]    2    4    6
 > class(v)
@@ -443,34 +530,35 @@ $dim
 
 ## Matrike in več dimenzionalne tabele {.smaller}
 
-- Podobno matriko sestavimo takole:
+- Matriko lahko sestavimo tudi takole
 ```r
-> a <- structure(1:6, dim=c(2,3))
+> a <- structure(1:6, dim=c(2,3))   # "surovo" sestavljanje matrike
 > class(a)
 [1] "matrix"
 ```
 - Večdimenzionalna tabela
 ```r
-> b <- array(1:12, c(2, 3, 2))
+> b <- array(1:12, c(2, 3, 2))      # večdimenzionalna tabela dimenzij 2x3x2
 > b
 , , 1
-     [,1] [,2] [,3]
+         [,1] [,2] [,3]
 [1,]    1    3    5
 [2,]    2    4    6
 , , 2
-     [,1] [,2] [,3]
+         [,1] [,2] [,3]
 [1,]    7    9   11
 [2,]    8   10   12
-> 
+> class(b)
+[1] "array"
 ```
 
 ## Matrike in več dimenzionalne tabele {.smaller}
 
 - Funkcija  ```dim(...)``` spreminja atribut  ```dim``` na vektorju
 ```r
-> dim(b) <- c(2, 6)
+> dim(b) <- c(2, 6)  # prerazporeditev 2x3x2 dim. tabele v 2x6 dim. matriko
 > b
-     [,1] [,2] [,3] [,4] [,5] [,6]
+         [,1] [,2] [,3] [,4] [,5] [,6]
 [1,]    1    3    5    7    9   11
 [2,]    2    4    6    8   10   12
 > class(b)
@@ -478,17 +566,17 @@ $dim
 ```
 - Razne dimenzije
 ```r
-> length(b)
+> length(b)    # dolžina vektorja
 [1] 12
-> nrow(b)
+> nrow(b)      # število vrstic
 [1] 2
-> ncol(b)
+> ncol(b)      # število stolpcev
 [1] 6
-> dim(b)
+> dim(b)       # vektor dimenzij
 [1] 2 6
 ```
 
-## Poimenovanja vrstic in stolpcev {.smaller}
+## Poimenovanja vrstic in stolpcev, indeksi {.smaller}
 
 - 
 ```r
@@ -497,6 +585,9 @@ $dim
   [,1] [,2] [,3] [,4] [,5] [,6]
 1    1    3    5    7    9   11
 2    2    4    6    8   10   12
+```
+- 
+```r
 > colnames(b) <- c("prvi", "drugi", "tretji", "četrti", "peti", "šesti")
 > b
   prvi drugi tretji četrti peti šesti
@@ -504,22 +595,12 @@ $dim
 2    2     4      6      8   10    12
 > 
 ```
-- Vektorji, matrike, faktorji in večdimenzionalne tabele so vektroji z dodatnimi atributi, ki jih R in njegove funkcije ustrezno intepretirajo
--
+- 
 ```r
-> v <- c(10, 20)
-> names(v) <- c("prvi", "drugi")
-> v
- prvi drugi 
-   10    20 
+> b[2,3] # Dostop do elementov na indeksih
+[1] 6
 ```
--
-```r
-> v <- c(prvi=10, drugi=20)
-> v
- prvi drugi 
-   10    20 
-```
+- Vektorji, matrike, faktorji in večdimenzionalne tabele so vektorji z dodatnimi atributi, ki jih R in njegove funkcije ustrezno intepretirajo
 
 ## Seznami {.smaller}
 
@@ -549,7 +630,6 @@ $drugi
 > seznam$drugi
 [1] 1
 ```
-- Enak način dostopa do posameznih elementov velja tudi za vektorje!
 
 ## Razpredelnice {.smaller}
 
