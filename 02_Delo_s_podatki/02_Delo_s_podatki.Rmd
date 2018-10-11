@@ -1,173 +1,172 @@
 ---
 title: "Delo s podatki"
 output:
-  slidy_presentation:
-    incremental: yes
+  # slidy_presentation:
+  #   incremental: yes
   ioslides_presentation:
     incremental: yes
-  beamer_presentation:
-    incremental: yes
+  # beamer_presentation:
+  #   incremental: yes
 framework: io2012
 ---
 
-## Branje podatkov
+## Branje podatkov {.smaller}
 
-- Podatke pridobivamo iz različnih virov (tekstovni formati in datoteke, CSV, Excel, splet, podatkovne baze)
+- Podatke pridobivamo iz različnih virov (tekstovni formati in datoteke, CSV, Excel, splet, podatkovne baze, ...)
 - Tipično nas zanimajo tabelarični podatki
-- Oglejmo si tabeli v Excelu
+- Oglejmo si tabelo v Excelu
 - <img src="viri/primer.png" width="400px" float=center>
-- Potrebujemo paket ```xlsx```
+- Potrebujemo paketa ```readxl``` ter ```openxlsx```
 - ```Tools -> Install packages```
-- Nalaganje paketa (podobno ```import ???``` v Pythonu)
+- Nalaganje paketa (podobno ```import <paket>``` v Pythonu)
 -
 ```r
-> require("xlsx")
+> require("readxl")
+> require("openxlsx")
 ```
 
-## Branje podatkov iz Excela
+## Branje podatkov iz Excela {.smaller}
 
 - Najbolje, da delovno področje nastavimo na mapo, kjer je Excelova datoteka.
+- V našem primeru, bo datoteka v podmapi ```viri```
 -
 ```r
-> podatki <- read.xlsx(file = "primer.xlsx", sheetName = "Sheet1")
-> podatki
-    Ime Priimek Starost Št_prijateljev
-1 Janez   Novak      10             23
-2  Miha   Kovač      13             40
-3 Metka   Pečar      23             33
+> podatki <- read_xlsx("viri/primer.xlsx")
+> print(podatki)
+# A tibble: 6 x 4
+  Ime   Priimek Starost Št_prijateljev
+  <chr> <chr>     <dbl>          <dbl>
+1 Janez Novak        10             23
+2 Miha  Kovač        13             40
+3 Metka Pečar        23             33
 4 Janko Zelenko      22             27
-5  Meta   Arčon      12             66
-6   Črt  Žerjal      34            193
+5 Meta  Arčon        12             66
+6 Črt   Žerjal       34            193
+```
+- Lahko podamo tudi specifičen list (ang. sheet) v Excelovi datoteki
+```r
+> podatki <- read_xlsx("viri/primer.xlsx", sheet="List1")
 ```
 
 ## Dodajanje stolpca {.smaller}
 
-- Izračunajmo povprečno število prijateljav na leto
+- Izračunajmo povprečno število prijateljav na leto življenja
 - 
 ```r
 > podatki$Št_prijateljev/podatki$Starost
 [1] 2.300000 3.076923 1.434783 1.227273 5.500000 5.676471
 ```
-- Dodamo v razpredelnico kot nov stolpec (podobno kot formule pri Excelu)
+- Dodajmo rezultat v razpredelnico kot nov stolpec (podobno kot formule pri Excelu)
 ```r
 > podatki$Št_prijateljev_na_leto <- podatki$Št_prijateljev/podatki$Starost
-> podatki
-    Ime Priimek Starost Št_prijateljev Št_prijateljev_na_leto
-1 Janez   Novak      10             23               2.300000
-2  Miha   Kovač      13             40               3.076923
-3 Metka   Pečar      23             33               1.434783
-4 Janko Zelenko      22             27               1.227273
-5  Meta   Arčon      12             66               5.500000
-6   Črt  Žerjal      34            193               5.676471
+> View(podatki)
 ```
+- <img src="viri/nov_stolpec.png" width="400px" float=center>
 - namesto ```podatki$ime``` bi lahko pisali ```podatki["ime"]```
 
+## Knjižnica ```dplyr``` {.smaller}
+- Omogoča enostavnejše in preglednejše operacije na razpredelnicah
+- Uvaja operator 'veriženja', ki omogoča preglednejši opis operacij brez gnezdenja funkcij
+- ```f(a, b, ...)``` zapišemo v obliki ```a %>% f(b, ...)``` 
+- Rezultat prejšnjega izraza se postavi za prvi argument funkcije naslednjega izraza, ki ga ni potrebno navajati.
+- Uvoz
+```r
+> require(dplyr)
+```
+- Primer
+```r
+> View(podatki)
+> podatki %>% View()
+> podatki %>% View
+```
+- Pozor: funkcije iz paketa ```dplyr``` za delo na razpredelnicah vedno kot prvi argument jemljejo razpredelnico in vedno vračajo novo razpredelnico (ne spreminjajo obstoječe)!
+ 
 ## Popravljanje stolpca {.smaller}
 
 - Popravimo dodani stolpec tako, da ga zaokrožimo na dve decimalki
 - 
 ```r
-> podatki$Št_prijateljev_na_leto <- round(podatki$Št_prijateljev_na_leto, digits = 2)
-> podatki
-    Ime Priimek Starost Št_prijateljev Št_prijateljev_na_leto
-1 Janez   Novak      10             23                   2.30
-2  Miha   Kovač      13             40                   3.08
-3 Metka   Pečar      23             33                   1.43
-4 Janko Zelenko      22             27                   1.23
-5  Meta   Arčon      12             66                   5.50
-6   Črt  Žerjal      34            193                   5.68
+> podatki$Št_prijateljev_na_leto <- round(podatki$Št_prijateljev_na_leto, 2)
 ```
 - Stolpec (ali več stolpcev) preberemo kot vektor in ga prepišemo
-- Funkcije se tudi aplicirajo vektorsko 
+- Alternativno z ```dplyr```
+```r
+> podatki <- podatki %>% 
+       mutate(Št_prijateljev_na_leto=round(Št_prijateljev/Starost, 2))
+```
+- Pozor: ```dplyr``` nam olajša delo, saj imena stolpcev preprosto navedemo kot dejanska imena in z njimi lahko neposredno računamo.
+- Pomembno: če zapis veriženja napišemo v večih vrsticah, mora biti operator ```%>%``` pred prelomom vrstice.
 
-## Brisanje stolpca
+## Brisanje stolpca {.smaller}
 
 - Stolpec ```Priimek``` želimo odstraniti
 -
 ```r
-> priimki <- podatki$Priimek
+> priimki <- podatki$Priimek  # shranimo stolpec v vektor
 > podatki$Priimek <- NULL
-> podatki
-    Ime Starost Št_prijateljev Št_prijateljev_na_leto
-1 Janez      10             23                   2.30
-2  Miha      13             40                   3.08
-3 Metka      23             33                   1.43
-4 Janko      22             27                   1.23
-5  Meta      12             66                   5.50
-6   Črt      34            193                   5.68
+> podatki %>% View
 ```
-- Če v stolpec zapišemo ```NULL``` ga zbrišemo.
-- Če v stolpec zapišemo ```0``` ga nastavimo na vrednost ```0```
+- Če v stolpec zapišemo ```NULL```, ga zbrišemo.
+- Pozor: če v stolpec zapišemo ```0```, ga nastavimo na vrednost ```0```!
+- Z ```dplyr```:
+```r
+> podatki2 <- podatki %>% select(-Priimek)
+```
+- Funkcija ```select``` izbere stolpce. Če je stolpec predznačen z ```'-'```, to povzroči odstranjevanje tega stolpca v rezultatu.
 
-## Vstavljanje stolpca
+## Vstavljanje stolpca {.smaller}
 
-- Stolpec dodamo in stolpce preuredimo
+- Dodajanje/vstavljanje stolpca
 - 
 ```r
 > podatki$Priimek <- priimki
-> podatki
-    Ime Starost Št_prijateljev Št_prijateljev_na_leto Priimek
-1 Janez      10             23                   2.30   Novak
-2  Miha      13             40                   3.08   Kovač
-3 Metka      23             33                   1.43   Pečar
-4 Janko      22             27                   1.23 Zelenko
-5  Meta      12             66                   5.50   Arčon
-6   Črt      34            193                   5.68  Žerjal
+> podatki %>% View
 ```
-- Po vstavljanju lahko stolpce preuredimo
+- Alternativno (```dplyr```)
+```r
+> podatki2 %>% mutate(Priimek=priimki) 
+```
+- Stolpec se doda na zadnje mesto.
+- Če ne izpisujemo tabel, vrstni red stolpcev ni važen.
 
 ## Preurejanje stolpcev
 
 - Novo dodani stolpec želimo prestaviti na 2. mesto
-- Preureditev stolpcev izvedemo z operatorjem ```[]```za podzaporedja
+- Preureditev stolpcev izvedemo z operatorjem ```[]```za podzaporedja, ki pa vrne novo razpredelnico.
 -
 ```r
 > podatki[c(1,5,2,3,4)]
-    Ime Priimek Starost Št_prijateljev Št_prijateljev_na_leto
-1 Janez   Novak      10             23                   2.30
-2  Miha   Kovač      13             40                   3.08
-3 Metka   Pečar      23             33                   1.43
-4 Janko Zelenko      22             27                   1.23
-5  Meta   Arčon      12             66                   5.50
-6   Črt  Žerjal      34            193                   5.68
 ```
-- Če želimo preurediti isto razpredelnico, ji priredimo predelano
-- 
+- Če želimo preurediti isto razpredelnico, ji priredimo dobljeno razpredelnico.
 ```r
 > podatki <- podatki[c(1,5,2,3,4)]
 ```
 
 ## Izbor določenih stolpcev
 
-- Z operatorjem za podzaporedja lahko naredimo razpredelnico z izbranimi stolpci
+- Z operatorjem za podzaporedja lahko naredimo novo razpredelnico z izbranimi stolpci
 -
 ```r
 > podatki[c("Ime", "Št_prijateljev")]
-    Ime Št_prijateljev
-1 Janez             23
-2  Miha             40
-3 Metka             33
-4 Janko             27
-5  Meta             66
-6   Črt            193
 ```
 - Namesto indeksov smo uporabili kar imena stolpcev
-
+- Alternativno (```dplyr```) lahko uporabimo funkcijo ```select```:
+```r
+> podatki %>% select(Ime, Št_prijateljev)
+```
 ## Preimenovanje stolpca {.smaller}
 
 - Stolpec ```Št_prijateljev``` bi radi preimenovali v ```st_prijateljev```
 -
 ```r
 > names(podatki)[4] <- "st_prijateljev"
-> names(podatki)
+> podatki %>% names
 [1] "Ime"                    "Priimek"                "Starost"               
 [4] "st_prijateljev"         "Št_prijateljev_na_leto"
 ```
-- Alternativno preko logičnega indeksa
+- Alternativno (```dplyr```) lahko uporabimo funkcijo ```rename```:
 ```r
-> names(podatki) == "Št_prijateljev"
-[1] FALSE FALSE FALSE  TRUE FALSE
-> names(podatki)[names(podatki) == "Št_prijateljev"] <- "st_prijateljev"
+> podatki <- podatki %>% rename(st_prijateljev=Št_prijateljev) 
 ```
 
 ## Filtriranje vrstic {.smaller}
@@ -176,27 +175,19 @@ framework: io2012
 - 
 ```r
 > podatki[podatki$Starost >= 15, ]
-    Ime Priimek Starost st_prijateljev Št_prijateljev_na_leto
-3 Metka   Pečar      23             33                   1.43
-4 Janko Zelenko      22             27                   1.23
-6   Črt  Žerjal      34            193                   5.68
 ```
 - imena vseh, ki so stari med 15 in 30 let
 - 
 ```r
 > podatki[podatki$Starost >= 15 & podatki$Starost <= 30, c("Ime")]
-[1] Metka Janko
-Levels: Črt Janez Janko Meta Metka Miha
 ```
-- 
+- Alternativno (```dplyr```) lahko uporabimo funkcijo ```filter```:
 ```r
-> podatki$Starost >= 15
-[1] FALSE FALSE  TRUE  TRUE FALSE  TRUE
-> which(podatki$Starost >= 15)
-[1] 3 4 6
+> podatki %>% filter(Starost >= 15)
+> podatki %>% filter(Starost >= 15 & Starost <= 30) %>% select(Ime)
 ```
 
-## Preurejanje vrstic
+## Preurejanje vrstic {.smaller}
 
 - Kako bi morali urediti indekse, da bi bile vrstice razporejene po starosti?
 - 
@@ -210,30 +201,31 @@ Levels: Črt Janez Janko Meta Metka Miha
 - 
 ```r
 > novi <- podatki[order(podatki$Starost), ]
-> novi
-    Ime Priimek Starost st_prijateljev Št_prijateljev_na_leto
-1 Janez   Novak      10             23                   2.30
-5  Meta   Arčon      12             66                   5.50
-2  Miha   Kovač      13             40                   3.08
-4 Janko Zelenko      22             27                   1.23
-3 Metka   Pečar      23             33                   1.43
-6   Črt  Žerjal      34            193                   5.68
+```
+- Alternativno (```dplyr```) lahko uporabimo funkcijo ```arrange```:
+```r
+> podatki %>% arrange(Starost)
+> podatki %>% arrange(desc(Starost)) # obratni vrstni red
 ```
 
-## Shranjevanje v Excelovo datoteko
+## Shranjevanje v Excelovo datoteko {.smaller}
 
-- 
+- Uporabimo knjižnico ```openxlsx```, ter funkcijo ```write.xlsx```.
 ```r
-> write.xlsx(novi, "primer2.xlsx")
+> require("openxlsx")
+> write.xlsx(novi, "viri/primer2.xlsx")
 ```
 - <img src="viri/primer2.png" width="400px" float=center>
-- Če želimo brez oštevilčenja vrstic
--
+- Zaporedje vseh (efektivnih) transformacij lahko s pomočjo veriženja napišemo takole:
 ```r
-> write.xlsx(novi, "primer2.xlsx",row.names = FALSE)
+read_xlsx("viri/primer.xlsx") %>%
+       mutate(Št_prijateljev_na_leto=round(Št_prijateljev/Starost, 2)) %>%   
+       rename(st_prijateljev=Št_prijateljev) %>%   
+       arrange(Starost) %>%   
+       write.xlsx("viri/primer2.xlsx")
 ```
 
-## Tekstovni formati {.smaller}
+## Razmejeni tekstovni format (CSV) {.smaller}
 
 - Podatke velikokrat dobimo v tekstovni obliki, v razmejenem formatu
     - vsaka vrstica v ločeni vrstici
@@ -245,34 +237,22 @@ Levels: Črt Janez Janko Meta Metka Miha
     - pogost format
     - ameriški (separator je vejica, decimalna pika) in evropski (separator je podpičje, decimalna vejica)
     - možen izvoz lista iz Excela
-- funkcije:
-    - ```read.table``` - sami konfiguriramo razmejitveni znak
-    - ```read.csv``` - ameriški CSV
-    - ```read.csv2``` - evropski CSV
-   
-## Tekstovni formati {.smaller}
+    - branje - paket ```readr```
+    
+## Razmejeni tekstovni format (CSV) {.smaller}
 
-- Ekvivalentne funkcije za pisanje: ```write.table```, ```write.csv```, ```write.csv2```
-- Dodatne opcije (pomoč vedno prikličemo z ```help(ukaz)```)
-- ```sep``` - znak za separator. Če ```""```` je to beli znak.
-- ```header````- ```TRUE/FALSE``` - ali ima tabela prvo vrstico, ki je glava
-- ```quote``` - znak za navednice, privzeto ```"```
-- ```dec``` - znak za decimalno piko
-- ```row.names``` - vektor imen vrstic oz. indeks stolpca, ki naj se uporabi kot niz
-- ```col.names``` - imena stolpcev. Privzeto ```V[indeks]```
-- ```as.is```- določanje tipa tekstovnih stolpcev (privzeto je to ```factor```
-- ```colClasses``` - tip se ponavadi sam določa, lahko pa podamo vektor tipov po stolpcih
-- ```na.strings``` - kateri niz določa prazna polja 
-- ```skip``` - koliko vrstic izpustimo na začetku
-- ```nrow``` - koliko zaporednih vrstic sploh preberemo
-- ```encoding```- kodna tabela (ponavadi se sama določi, lahko npr. ```"UTF-8"```)
+- Branje:
+    - ```read_delim``` - sami konfiguriramo razmejitveni znak
+    - ```read_csv``` - ameriški CSV
+    - ```read_csv2``` - evropski CSV
+- Ekvivalentne funkcije za pisanje: ```write.table```, ```write.csv```, ```write.csv2```, privzeto vgrajene v R
+- Zapis razpredelnice v CSV datoteko v evropskem formatu
+```r
+> podatki %>% write.csv2("viri/primer2.csv",fileEncoding = "utf8")
+```
+- Branje:
+```r
+> prebrani <- read_csv2("viri/primer2.csv") 
+> prebrani %>% View
+```
 
-## Datoteke iz statističnega urada
-
-- http://www.stat.si/
-- Npr. ```Izobraževanje```, zavihek ```Podatki```, ```Podrobne tabele```
-- Gremo v globino, npr. ```Vpisani v visokošolsko izobraževanje Podatki v PC-Axis formatu```, izberemo prvo možnost
-- http://pxweb.stat.si/pxweb/Dialog/varval.asp?ma=0955201s&ti=&path=../Database/Dem_soc/09_izobrazevanje/08_terciarno_izobraz/01_09552_vpisani_dodiplomska/&lang=2
-- Nastavimo filtre, način prikaza tabele (izvoza) kot ```Razmejena datoteka z glavo .csv```, npr. povsod ```Izberi vse````
-- Gumb ```Izpis podatkov````
-- Dobimo datoteko v dokaj zapleteni obliki. 
