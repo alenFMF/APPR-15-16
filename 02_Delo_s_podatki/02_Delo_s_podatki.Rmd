@@ -13,22 +13,22 @@ framework: io2012
 ## Branje podatkov {.smaller}
 
 - Podatke pridobivamo iz različnih virov (tekstovni formati in datoteke, CSV, Excel, splet, podatkovne baze, ...)
-- Tipično nas zanimajo tabelarični podatki
-- Oglejmo si tabelo v Excelu
+- Tipično nas zanimajo tabelarični podatki.
+- Oglejmo si razpredelnico v Excelu.
 - <img src="viri/primer.png" width="400px" float=center>
-- Potrebujemo paketa ```readxl``` ter ```openxlsx```
+- Potrebujemo paketa ```readxl``` ter ```openxlsx```.
 - ```Tools -> Install packages```
-- Nalaganje paketa (podobno ```import <paket>``` v Pythonu)
+- Nalaganje paketa (podobno ```import <ime_paketa>``` v Pythonu)
 -
 ```r
-> require("readxl")
-> require("openxlsx")
+> library("readxl")
+> library("openxlsx")
 ```
 
 ## Branje podatkov iz Excela {.smaller}
 
 - Najbolje, da delovno področje nastavimo na mapo, kjer je Excelova datoteka.
-- V našem primeru, bo datoteka v podmapi ```viri```
+- V našem primeru, bo datoteka v podmapi ```viri```.
 -
 ```r
 > podatki <- read_xlsx("viri/primer.xlsx")
@@ -50,13 +50,13 @@ framework: io2012
 
 ## Dodajanje stolpca {.smaller}
 
-- Izračunajmo povprečno število prijateljav na leto življenja
+- Izračunajmo povprečno število prijateljav na leto življenja.
 - 
 ```r
 > podatki$Št_prijateljev/podatki$Starost
 [1] 2.300000 3.076923 1.434783 1.227273 5.500000 5.676471
 ```
-- Dodajmo rezultat v razpredelnico kot nov stolpec (podobno kot formule pri Excelu)
+- Dodajmo rezultat v razpredelnico kot nov stolpec (podobno kot kopiranje formule pri Excelu).
 ```r
 > podatki$Št_prijateljev_na_leto <- podatki$Št_prijateljev/podatki$Starost
 > View(podatki)
@@ -65,13 +65,13 @@ framework: io2012
 - namesto ```podatki$ime``` bi lahko pisali ```podatki["ime"]```
 
 ## Knjižnica ```dplyr``` {.smaller}
-- Omogoča enostavnejše in preglednejše operacije na razpredelnicah
-- Uvaja operator 'veriženja', ki omogoča preglednejši opis operacij brez gnezdenja funkcij
-- ```f(a, b, ...)``` zapišemo v obliki ```a %>% f(b, ...)``` 
+- Omogoča enostavnejše in preglednejše operacije na razpredelnicah.
+- Uvaja operator 'veriženja', ki omogoča preglednejši opis operacij brez gnezdenja funkcij.
+- ```f(a, b, ...)``` zapišemo v obliki ```a %>% f(b, ...)```. 
 - Rezultat prejšnjega izraza se postavi za prvi argument funkcije naslednjega izraza, ki ga ni potrebno navajati.
 - Uvoz
 ```r
-> require(dplyr)
+> library(dplyr)
 ```
 - Primer
 ```r
@@ -83,13 +83,13 @@ framework: io2012
  
 ## Popravljanje stolpca {.smaller}
 
-- Popravimo dodani stolpec tako, da ga zaokrožimo na dve decimalki
+- Popravimo dodani stolpec tako, da ga zaokrožimo na dve decimalki.
 - 
 ```r
 > podatki$Št_prijateljev_na_leto <- round(podatki$Št_prijateljev_na_leto, 2)
 ```
-- Stolpec (ali več stolpcev) preberemo kot vektor in ga prepišemo
-- Alternativno z ```dplyr```
+- Stolpec (ali več stolpcev) preberemo kot vektor in ga prepišemo.
+- Alternativno z ```dplyr```:
 ```r
 > podatki <- podatki %>% 
        mutate(Št_prijateljev_na_leto=round(Št_prijateljev/Starost, 2))
@@ -99,7 +99,7 @@ framework: io2012
 
 ## Brisanje stolpca {.smaller}
 
-- Stolpec ```Priimek``` želimo odstraniti
+- Stolpec ```Priimek``` želimo odstraniti.
 -
 ```r
 > priimki <- podatki$Priimek  # shranimo stolpec v vektor
@@ -127,12 +127,12 @@ framework: io2012
 > podatki2 %>% mutate(Priimek=priimki) 
 ```
 - Stolpec se doda na zadnje mesto.
-- Če ne izpisujemo tabel, vrstni red stolpcev ni važen.
+- Če razpredelnic ne izpisujemo, vrstni red stolpcev načeloma ni važen.
 
 ## Preurejanje stolpcev
 
-- Novo dodani stolpec želimo prestaviti na 2. mesto
-- Preureditev stolpcev izvedemo z operatorjem ```[]```za podzaporedja, ki pa vrne novo razpredelnico.
+- Novo dodani stolpec želimo prestaviti na 2. mesto.
+- Preureditev stolpcev izvedemo z operatorjem ```[]``` za podzaporedja, ki pa vrne novo razpredelnico.
 -
 ```r
 > podatki[c(1,5,2,3,4)]
@@ -144,19 +144,19 @@ framework: io2012
 
 ## Izbor določenih stolpcev
 
-- Z operatorjem za podzaporedja lahko naredimo novo razpredelnico z izbranimi stolpci
+- Z operatorjem za podzaporedja lahko naredimo novo razpredelnico z izbranimi stolpci.
 -
 ```r
 > podatki[c("Ime", "Št_prijateljev")]
 ```
-- Namesto indeksov smo uporabili kar imena stolpcev
+- Namesto indeksov smo uporabili kar imena stolpcev.
 - Alternativno (```dplyr```) lahko uporabimo funkcijo ```select```:
 ```r
 > podatki %>% select(Ime, Št_prijateljev)
 ```
 ## Preimenovanje stolpca {.smaller}
 
-- Stolpec ```Št_prijateljev``` bi radi preimenovali v ```st_prijateljev```
+- Stolpec ```Št_prijateljev``` bi radi preimenovali v ```st_prijateljev```.
 -
 ```r
 > names(podatki)[4] <- "st_prijateljev"
@@ -171,12 +171,12 @@ framework: io2012
 
 ## Filtriranje vrstic {.smaller}
 
-- vsi, ki so stari vsaj 15 let
+- Vsi, ki so stari vsaj 15 let.
 - 
 ```r
 > podatki[podatki$Starost >= 15, ]
 ```
-- imena vseh, ki so stari med 15 in 30 let
+- Imena vseh, ki so stari med 15 in 30 let.
 - 
 ```r
 > podatki[podatki$Starost >= 15 & podatki$Starost <= 30, c("Ime")]
@@ -197,7 +197,7 @@ framework: io2012
 > order(podatki$Starost)
 [1] 1 5 2 4 3 6
 ```
-- Urejene indekse uporabimo za prerazporeditev.
+- Prerazporejene indekse uporabimo za prerazporeditev v urejen vrstni red.
 - 
 ```r
 > novi <- podatki[order(podatki$Starost), ]
@@ -212,7 +212,7 @@ framework: io2012
 
 - Uporabimo knjižnico ```openxlsx```, ter funkcijo ```write.xlsx```.
 ```r
-> require("openxlsx")
+> library("openxlsx")
 > write.xlsx(novi, "viri/primer2.xlsx")
 ```
 - <img src="viri/primer2.png" width="400px" float=center>
@@ -228,25 +228,24 @@ read_xlsx("viri/primer.xlsx") %>%
 ## Razmejeni tekstovni format (CSV) {.smaller}
 
 - Podatke velikokrat dobimo v tekstovni obliki, v razmejenem formatu
-    - vsaka vrstica v ločeni vrstici
+    - vsaka vrstica v ločeni vrstici,
     - celice so razmejene s posebnim znakom (ang. delimiter). Tipično je to podpičje, vejica, presledek, tabulator, ...
-    - decimalna vejica ali pika?
-    - tekstovne celice so v dvojnih navednicah
-    - paziti moramo na kodne tabele (kot pri tekstovnih datotekah v Pythonu)
+    - decimalna vejica ali pika,
+    - tekstovne celice so v dvojnih navednicah,
+    - paziti moramo na kodne tabele (kot pri tekstovnih datotekah v Pythonu),
 - CSV (ang. Comma separated values)
-    - pogost format
-    - ameriški (separator je vejica, decimalna pika) in evropski (separator je podpičje, decimalna vejica)
+    - pogost format,
+    - ameriški (separator je vejica, decimalna pika) in evropski (separator je podpičje, decimalna vejica),
     - možen izvoz lista iz Excela
-    - branje - paket ```readr```
     
 ## Razmejeni tekstovni format (CSV) {.smaller}
 
-- Branje:
+- Branje - branje - paket ```readr```
     - ```read_delim``` - sami konfiguriramo razmejitveni znak
     - ```read_csv``` - ameriški CSV
     - ```read_csv2``` - evropski CSV
 - Ekvivalentne funkcije za pisanje: ```write.table```, ```write.csv```, ```write.csv2```, privzeto vgrajene v R
-- Zapis razpredelnice v CSV datoteko v evropskem formatu
+- Primer: zapis razpredelnice v CSV datoteko v evropskem formatu
 ```r
 > podatki %>% write.csv2("viri/primer2.csv",fileEncoding = "utf8")
 ```

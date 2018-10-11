@@ -1,12 +1,12 @@
-require("readxl")   # funkcije za branje Excelovih datotek 
-require("openxlsx")   # funkcije za pisanje Excelovih datotek
-require("dplyr")    # funkcije za lažjo manipulacijo operacij na razpredelnicah
+library("readxl")   # funkcije za branje Excelovih datotek 
+library("openxlsx")   # funkcije za pisanje Excelovih datotek
+library("dplyr")    # funkcije za lažjo manipulacijo operacij na razpredelnicah
 
 # Uvoz razpredelnice iz prvega lista Excelove datoteke
 podatki <- read_xlsx("viri/primer.xlsx")
 View(podatki)    # Interaktivni izpis razpredelnice v RStudiu
 
-# Alternativno, če želimo izbrati list
+# Alternativni uvoz, če želimo izbrati list
 podatki <- read_xlsx("viri/primer.xlsx", sheet="List1")
 View(podatki)
 
@@ -24,11 +24,11 @@ podatki <- podatki %>%
        mutate(Št_prijateljev_na_leto=round(Št_prijateljev/Starost, 2))
 podatki %>% View
 
-# Kopiranje stolpca in brisanje
+# Kopiranje stolpca v vektor ...
 priimki <- podatki$Priimek
 priimki %>% print
 
-# Brisanje stolpca
+# ... in brisanje
 podatki$Priimek <- NULL
 podatki %>% View
 
@@ -37,13 +37,15 @@ podatki$Priimek <- priimki
 podatki %>% View
 
 # Brisanje (in dodajanje stolpca s pomočjo knjižnice dplyr)
-podatki2 <- podatki %>% select(-Priimek)    # odstranjevanje stolpca s pomočjo '-'
+# Znak '-' v funkciji 'select' pomeni - "brez tega stolpca" 
+podatki2 <- podatki %>% select(-Priimek)    
 podatki2 %>% View
 
 # Ponovno dodajanje stolpca
 podatki2 %>% mutate(Priimek=priimki) %>% View
 
-# Preureditev stolpcev
+# Preureditev stolpcev (vrstni red stolpcev)
+# Razpredelnico smatramo kot seznam stolpcev in uporabimo operator []
 podatki[c(1,5,2,3,4)] %>% View
 
 podatki <- podatki[c(1,5,2,3,4)]
@@ -51,6 +53,8 @@ podatki %>% View
 
 # Izbor določenih stolpcev
 podatki[c("Ime", "Št_prijateljev")]
+
+# z dplyr in funkcijo select
 podatki %>% select(Ime, Št_prijateljev)
 
 # Preimenovanje stolpca
@@ -71,7 +75,11 @@ podatki %>% filter(Starost >= 15 & Starost <= 30) %>% select(Ime)
 
 # Preurejanje (sortiranje po vrsticah)
 podatki$Starost %>% print 
-order(podatki$Starost)  # Izračun prerazporeditve, ki uredi zaporedje
+
+# Izračun vektorja indeksov prerazporeditve, ki uredi zaporedje
+order(podatki$Starost)  
+
+# Nova razpredelnica s prerazporejenimi vrsticami
 novi <- podatki[order(podatki$Starost), ]
 novi %>% View
 
@@ -79,6 +87,7 @@ podatki %>% View
 
 # Urejanje s knjižnico dplyr
 podatki %>% arrange(Starost)
+
 # Urejanje v obratnem vrstnem redu
 podatki %>% arrange(desc(Starost))
 
