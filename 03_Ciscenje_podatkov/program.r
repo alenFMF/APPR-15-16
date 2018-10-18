@@ -5,10 +5,10 @@ require(readr)
 
 # Poskusi
 # Gola datoteka
-uvoz <- read_csv2("0955201ss.csv")
+uvoz <- read_csv2("viri/0955201ss.csv")
 
 # Če je napaka povezana z "multibyte string", gotovo nimamo prave kodne tabele
-uvoz <- read_csv2("0955201ss.csv", 
+uvoz <- read_csv2("viri/0955201ss.csv", 
                   locale=locale(encoding="cp1250"))
   
 problems(uvoz)  
@@ -16,7 +16,7 @@ View(uvoz)
 
 # Zaradi zelo čudnega formata prebere samo en stoplec. Vsilimo vse stolpce z imeni.
 stolpci <- c("VISOKOSOLSKI_ZAVOD", "VRSTA_IZOBRAZEVANJA", "LETNIK", "NACIN_STUDIJA", "SPOL" , "STUDIJSKO_LETO", "ST_STUDENTOV")
-uvoz <- read_csv2("0955201ss.csv", 
+uvoz <- read_csv2("viri/0955201ss.csv", 
                   locale=locale(encoding="cp1250"),
                   col_names=stolpci)
 
@@ -24,7 +24,7 @@ problems(uvoz)
 View(uvoz)
 
 # Boljše :). Prve tri vrstice (oz. štiri v datoteki bi izpustili)        
-uvoz <- read_csv2("0955201ss.csv", 
+uvoz <- read_csv2("viri/0955201ss.csv", 
                   locale=locale(encoding="cp1250"),
                   col_names=stolpci,
                   skip=4)
@@ -32,7 +32,7 @@ uvoz <- read_csv2("0955201ss.csv",
 View(uvoz)
 
 # V resnici nas zanimajo podatki samo do (prebrane) vrstice 7162
-uvoz <- read_csv2("0955201ss.csv", 
+uvoz <- read_csv2("viri/0955201ss.csv", 
                   locale=locale(encoding="cp1250"),
                   col_names=stolpci,
                   skip=4,
@@ -41,7 +41,7 @@ uvoz <- read_csv2("0955201ss.csv",
 View(uvoz)
 
 # Namesto črtic "-" bi v zadnjem stolpcu želeli NA
-uvoz <- read_csv2("0955201ss.csv", 
+uvoz <- read_csv2("viri/0955201ss.csv", 
                      locale=locale(encoding="cp1250"),
                      col_names=stolpci,
                      skip=4,
@@ -62,8 +62,8 @@ podatki %>% View
 # Preverimo ustreznost tipov
 sapply(podatki, class)
 
-# Pretvorba tipa z readr parse_* funkcijo
-podatki$ST_STUDENTOV <- parse_integer(podatki$ST_STUDENTOV)
+# Pretvorba tipa z readr parse_* funkcijo (ni potrebna)
+# podatki$ST_STUDENTOV <- parse_integer(podatki$ST_STUDENTOV)
 
 sapply(podatki, class)
 
@@ -73,13 +73,11 @@ podatki %>% View
 # pregled vrednosti
 table(podatki$LETNIK)
 
-## DPLYR
 
 # Pretvorba v krajši zapis. Skonstruirajmo preslikavo.
 letniki <- c("1","2","3","4","5","6","Abs")
 imena <- c("1. letnik", "2. letnik", "3. letnik", "4. letnik", "5. letnik", "6. letnik", "Absolventi")
-tab2 <- data.frame(letnik=letniki, ime=imena)
-tab2$ime <- as.character(tab2$ime)  # data.frame naredi factor
+tab2 <- data.frame(letnik=letniki, ime=imena, stringsAsFactors = FALSE)
 
 head(tab2)
 sapply(tab2, class)
@@ -131,34 +129,64 @@ zdruzena %>% select(STUDIJSKO_LETO) %>% distinct()
 
 zdruzena %>% 
     group_by(STUDIJSKO_LETO) %>% 
-    summarize(VPIS=sum(ST_STUDENTOV, na.rm=TRUE))
+    summarize(VPIS=sum(ST_STUDENTOV, na.rm=TRUE)) %>%
+    View
+
+# "štih proba"
+zdruzena %>% 
+  filter(STUDIJSKO_LETO==2006) %>% 
+  pull(ST_STUDENTOV) %>%   # enako kot $ST_STUDENTOV - vrne vektor kot stolpec
+  sum(na.rm=TRUE)
 
 # Koliko je bilo vpisanih po spolih za posamezna leta
 
 zdruzena %>% 
     group_by(SPOL, STUDIJSKO_LETO) %>% 
-    summarize(VPIS=sum(ST_STUDENTOV, na.rm=TRUE))
+    summarize(VPIS=sum(ST_STUDENTOV, na.rm=TRUE)) %>%
+    View
 
 # Koliko žensk in koliko moških je bilo vpisanih na posameznih vrstah študija na univerzi
 
-tmp1 <- zdruzena %>% 
-   filter(VISOKOSOLSKI_ZAVOD == "Univerze - SKUPAJ") %>%
-   select(VRSTA_IZOBRAZEVANJA, SPOL, ST_STUDENTOV) 
+zdruzena %>% 
+  filter(VISOKOSOLSKI_ZAVOD == "Univerze - SKUPAJ") %>%
+  select(VRSTA_IZOBRAZEVANJA, SPOL, ST_STUDENTOV) %>%
+  group_by(VRSTA_IZOBRAZEVANJA, SPOL) %>%
+  summarize(STEVILO=sum(ST_STUDENTOV, na.rm=TRUE)) %>%
+  spread(SPOL, STEVILO) %>%
+  arrange(VRSTA_IZOBRAZEVANJA) %>%
+  mutate(
+    deležMoški=round(Moški/(Moški + Ženske), 2), 
+    deležŽenske=round(Ženske/(Moški + Ženske), 2)
+  ) %>%
+  View
 
-tmp2 <- tmp1 %>% 
-   filter(SPOL=="Moški") %>% 
-   group_by(VRSTA_IZOBRAZEVANJA) %>%
-   summarize(Moški=sum(ST_STUDENTOV, na.rm=TRUE))
+################
 
-tmp3 <- tmp1 %>% 
-  filter(SPOL=="Ženske") %>% 
-  group_by(VRSTA_IZOBRAZEVANJA) %>%
-  summarize(Ženske=sum(ST_STUDENTOV, na.rm=TRUE))
+## https://pxweb.stat.si/pxweb/Dialog/varval.asp?ma=0955201s&ti=&path=../Database/Dem_soc/09_izobrazevanje/08_terciarno_izobraz/01_09552_vpisani_dodiplomska/&lang=2
+# celovito preoblikovanje tabel v tidy data
+read_csv2("viri/0955201ss-nova-nontidy.csv", 
+           locale=locale(encoding="cp1250"),
+           col_names=TRUE,
+           skip=4,
+           n_max=1092,
+           na=c("", " ", "-")
+          ) %>%
+          rename(
+            VISOKOSOLSKI_ZAVOD = 1, 
+            VRSTA_IZOBRAZEVANJA = 2,
+            LETNIK = 3,
+            NACIN_STUDIJA = 4
+          ) %>%
+          fill(1:4) %>%
+          drop_na(NACIN_STUDIJA) %>%
+          filter(
+            VISOKOSOLSKI_ZAVOD != "Visokošolski zavodi - SKUPAJ",
+            VRSTA_IZOBRAZEVANJA != "Vrsta izobraževanja - SKUPAJ",
+            LETNIK != "Letniki - SKUPAJ",
+            NACIN_STUDIJA != "Način študija - SKUPAJ"
+          ) %>%
+          gather(SOLSKO_LETO, ST_STUDENTOV, -1:-4) %>%
+          separate(SOLSKO_LETO, into=c("LETO", "DRUGO_LETO")) %>%
+          View
 
-tmp4 <- tmp2 %>% 
-        inner_join(tmp3) %>%
-        select(VRSTA_IZOBRAZEVANJA, Moški, Ženske) %>%
-        arrange(VRSTA_IZOBRAZEVANJA) %>%
-        mutate(deležMoški=round(Moški/(Moški + Ženske), 2), deležŽenske=Ženske/(Moški + Ženske))
 
-View(tmp4) 

@@ -11,9 +11,10 @@ framework: io2012
 ## Datoteke iz statističnega urada {.smaller}
 
 - http://www.stat.si/
-- Npr. ```Izobraževanje```, zavihek ```Podatki```, ```Podrobne tabele```
-- Gremo v globino, npr. ```Vpisani v visokošolsko izobraževanje```, izberemo prvo možnost
-- [Direktna povezava](http://pxweb.stat.si/pxweb/Dialog/varval.asp?ma=0955201s&ti=&path=../Database/Dem_soc/09_izobrazevanje/08_terciarno_izobraz/01_09552_vpisani_dodiplomska/&lang=2)
+- Zavihek ```Podatki```, ```Izobraževanje```, kliknemo link ``` Izobraževanje``` na podnaslovu nižje na strani ```Več tabel v podatkovni bazi SI-STAT```
+- Izberemo ```Terciarno izobraževanje```, ```Vpisani v visokošolsko izobraževanje```
+- Izberemo kako od tabel tam. Mi bomo uporabili eno staro CSV datoteko.
+- Opomba: ta tabela mogoče ni več dosegljiva preko direktnega brskanja.
 - Nastavimo filtre, način prikaza tabele (izvoza) kot ```Prikaz tabele na zaslonu```, za vsak tip podatka izberemo vse možnosti, razen tistih, ki so sumarne (v imenu je ```SKUPAJ```)
 - Gumb ```Izpis podatkov```
 - Podatki se prikažejo kot tabela na zaslonu
@@ -358,41 +359,22 @@ table(podatki$LETNIK)
     group_by(SPOL, STUDIJSKO_LETO) %>% 
     summarize(VPIS=sum(ST_STUDENTOV, na.rm=TRUE))
 ```
-- Koliko žensk in koliko moških je bilo vpisanih na posameznih vrstah študija na univerzi?
+- Koliko žensk in koliko moških je bilo vpisanih na posameznih vrstah študija na univerzi in kakšni so njihovi deleži?
 -
 ```r
-> tmp1 <- zdruzena %>% 
-      filter(VISOKOSOLSKI_ZAVOD == "Univerze - SKUPAJ") %>% 
-      select(VRSTA_IZOBRAZEVANJA, SPOL, ST_STUDENTOV) 
+> zdruzena %>% 
+      filter(VISOKOSOLSKI_ZAVOD == "Univerze - SKUPAJ") %>%
+      select(VRSTA_IZOBRAZEVANJA, SPOL, ST_STUDENTOV) %>%
+      group_by(VRSTA_IZOBRAZEVANJA, SPOL) %>%
+      summarize(STEVILO=sum(ST_STUDENTOV, na.rm=TRUE)) %>%
+      spread(SPOL, STEVILO) %>%
+      arrange(VRSTA_IZOBRAZEVANJA) %>%
+      mutate(
+        deležMoški=round(Moški/(Moški + Ženske), 2), 
+        deležŽenske=round(Ženske/(Moški + Ženske), 2)
+      ) 
 ```
 
-## Združevanje {.smaller}
-
-- Grupiramo in seštejemo za moške.
--
-```r
-> tmp2 <- tmp1 %>% 
-      filter(SPOL=="Moški") %>% 
-      group_by(VRSTA_IZOBRAZEVANJA) %>% 
-      summarize(Moški=sum(ST_STUDENTOV, na.rm=TRUE))
-```
-- Grupiramo in seštejemo za ženske.
--
-```r
-> tmp3 <- tmp1 %>% 
-      filter(SPOL=="Ženske") %>% 
-      group_by(VRSTA_IZOBRAZEVANJA) %>% 
-      summarize(Ženske=sum(ST_STUDENTOV, na.rm=TRUE))
-```
-- Povežemo obe tabeli preko združitve (join)
--
-```r
-> tmp4 <- tmp2 %>% 
-        left_join(tmp3) %>% 
-        select(VRSTA_IZOBRAZEVANJA, Moški, Ženske) %>% 
-        arrange(VRSTA_IZOBRAZEVANJA) %>% 
-        mutate(razmerje=round(Ženske/Moški, 2))
-```
 
 ## Organizacija podatkov
 
@@ -518,7 +500,23 @@ Normalizacija v ustrezno obliko poteka na naslednji način:
 -
 <img src="viri/operacija_molt.png" width="50%">
 
-## Operacija "melt" {.smaller}
+## Operacija "gather" {.smaller}
+- paket ```tidyr```
+- 
+```{r}
+head(airquality)
+```
+-
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+require(tidyr)
+```
+-
+```{r}
+airquality %>% gather(MERITEV, VREDNOST, -Month, -Day) %>% head
+```
+
+
+## Alternativa - operacija "melt" {.smaller}
 
 - paket ```reshape2```
 - 
@@ -526,12 +524,12 @@ Normalizacija v ustrezno obliko poteka na naslednji način:
 head(airquality)
 ```
 -
-```{r echo=FALSE, warning=FALSE}
+```{r echo=FALSE, warning=FALSE, message=FALSE}
 require(reshape2)
 ```
 -
 ```{r}
-head(melt(airquality, id.vars = c("Month", "Day")))
+airquality %>% melt(id.vars = c("Month", "Day"), variable.names=c("MERITEV"), value.name = "VREDNOST")
 ```
 
 ## En stolpec več spremenljivk
