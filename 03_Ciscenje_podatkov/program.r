@@ -11,7 +11,7 @@ uvoz <- read_csv2("viri/0955201ss.csv")
 uvoz <- read_csv2("viri/0955201ss.csv", 
                   locale=locale(encoding="cp1250"))
   
-problems(uvoz)  
+problems(uvoz) %>% View
 View(uvoz)
 
 # Zaradi zelo čudnega formata prebere samo en stoplec. Vsilimo vse stolpce z imeni.
@@ -49,6 +49,8 @@ uvoz <- read_csv2("viri/0955201ss.csv",
                      na=c("", " ", "-"))
                      
 View(uvoz)
+
+sapply(uvoz, class)
 
 # Zaradi 'hierarhičnega uvoza' bi radi, da se vsi dimenzijski stolpci ponavljajo (razen STUDIJSKO_LETO !)
 
@@ -149,11 +151,11 @@ zdruzena %>%
 
 zdruzena %>% 
   filter(VISOKOSOLSKI_ZAVOD == "Univerze - SKUPAJ") %>%
-  select(VRSTA_IZOBRAZEVANJA, SPOL, ST_STUDENTOV) %>%
-  group_by(VRSTA_IZOBRAZEVANJA, SPOL) %>%
-  summarize(STEVILO=sum(ST_STUDENTOV, na.rm=TRUE)) %>%
-  spread(SPOL, STEVILO) %>%
-  arrange(VRSTA_IZOBRAZEVANJA) %>%
+  select(VRSTA_IZOBRAZEVANJA, SPOL, ST_STUDENTOV) %>% 
+  group_by(VRSTA_IZOBRAZEVANJA, SPOL) %>% 
+  summarize(STEVILO=sum(ST_STUDENTOV, na.rm=TRUE)) %>% 
+  spread(SPOL, STEVILO) %>% 
+  arrange(VRSTA_IZOBRAZEVANJA) %>% 
   mutate(
     deležMoški=round(Moški/(Moški + Ženske), 2), 
     deležŽenske=round(Ženske/(Moški + Ženske), 2)
@@ -170,23 +172,35 @@ read_csv2("viri/0955201ss-nova-nontidy.csv",
            skip=4,
            n_max=1092,
            na=c("", " ", "-")
-          ) %>%
+          ) %>% 
           rename(
             VISOKOSOLSKI_ZAVOD = 1, 
             VRSTA_IZOBRAZEVANJA = 2,
             LETNIK = 3,
             NACIN_STUDIJA = 4
-          ) %>%
-          fill(1:4) %>%
-          drop_na(NACIN_STUDIJA) %>%
+          ) %>% 
+          fill(1:4) %>% 
+          .[4:nrow(.), ] %>% 
+          # drop_na(NACIN_STUDIJA) %>%
           filter(
             VISOKOSOLSKI_ZAVOD != "Visokošolski zavodi - SKUPAJ",
             VRSTA_IZOBRAZEVANJA != "Vrsta izobraževanja - SKUPAJ",
             LETNIK != "Letniki - SKUPAJ",
             NACIN_STUDIJA != "Način študija - SKUPAJ"
-          ) %>%
+          ) %>% 
           gather(SOLSKO_LETO, ST_STUDENTOV, -1:-4) %>%
-          separate(SOLSKO_LETO, into=c("LETO", "DRUGO_LETO")) %>%
+          separate(SOLSKO_LETO, into=c("LETO", "DRUGO_LETO"), sep='/') %>% 
+          # View
+          # pull(LETO) %>%
+          # unique() %>%
+          # as.integer() %>%
+          # (function(x) {x >= 2000}) %>%   # ad-hoc funkcija
+          # all()   # all(vec) - ali so vse vrednosti v vektorju TRUE
+          mutate(
+            DRUGO_LETO=paste0("20",DRUGO_LETO) %>% as.integer(),
+            LETO=as.integer(LETO)
+          ) %>%
           View
+
 
 

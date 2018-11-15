@@ -446,7 +446,7 @@ Normalizacija v ustrezno obliko poteka na naslednji način:
 - Minimalni ključ (ang. candidate key): ključ, za katerega nobena stroga podmnožica ne predstavlja ključa.
 - Primarni ključ: izbrani minimalni ključ
 - Neključni stolpec: stolpec, ki ni v nobenem minimalnem ključu
-- Pogoj za 2NF: 1NF + nobena stroga množica kakega minimalnega ključa ne funkcijsko določa kak neključni stolpec
+- Pogoj za 2NF: 1NF + nobena stroga podmnožica kakega minimalnega ključa ne funkcijsko določa kak neključni stolpec
 -
 <table
 <tr><td>
@@ -476,8 +476,8 @@ Normalizacija v ustrezno obliko poteka na naslednji način:
 
 ## "Statistična" definicija "tidy data"
 
-- Stolpci so lahko spremenljivke ali meritve
-- Spremenljivke opisujejo parametre pri katerih je izvedene meritev
+- Stolpci lahko predstavljajo spremenljivke ali meritve
+- Spremenljivke opisujejo parametre pri katerih je izvedene meritev ("dimenzije")
 - Definicija "Tidy data"
     - vsaka spremenljivka tvori stolpec
     - za vsako meritev imamo eno vrstico
@@ -493,7 +493,7 @@ Normalizacija v ustrezno obliko poteka na naslednji način:
 - Več istovrstnih meritev v večih tabelah
 - Hadley Wickham, <a href="http://www.jstatsoft.org/article/view/v059i10/v59i10.pdf">Tidy Data</a>, Journal of Statistical Software, August 2014, Volume 59, Issue 10
 
-## Imena stolpcev s vrednosti
+## Imena stolpcev so vrednosti
 
 -
 <img src="viri/podatki_v_stolpcih.png" width="80%">
@@ -529,7 +529,8 @@ require(reshape2)
 ```
 -
 ```{r}
-airquality %>% melt(id.vars = c("Month", "Day"), variable.names=c("MERITEV"), value.name = "VREDNOST")
+airquality %>% melt(id.vars = c("Month", "Day"), variable.names=c("MERITEV"), 
+                    value.name = "VREDNOST")
 ```
 
 ## En stolpec več spremenljivk
