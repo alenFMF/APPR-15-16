@@ -1,0 +1,19 @@
+# Dodatni viri za modeliranje 
+
+## Razvrščanje
+- angleško: clustering; alternativno slovensko: gručenje
+- [Splošno](https://www.dmfa.si/Predavanja/Dokumenti/67/Ferligoj.pdf)
+
+### Hierarhično razvrščanje
+- [Opis](http://en.wikipedia.org/wiki/Hierarchical_clustering) 
+- [Interaktivna aplikacija](https://joyofdata.shinyapps.io/hclust-shiny/), [koda](https://github.com/joyofdata/hclust-shiny)
+
+### Razvrščanje s pomočjo metode voditeljev
+- [Opis](https://en.wikipedia.org/wiki/K-means_clustering)
+- [Interaktivna aplikacija](http://shiny.rstudio.com/gallery/kmeans-example.html) 
+
+## Linearna regresija
+- [Interaktivna aplikacija](https://gallery.shinyapps.io/slr_diag/)
+- [Determinacijski koeficient (R kvadrat)](https://en.wikipedia.org/wiki/Coefficient_of_determination)
+- [Korelacijski koeficient (R)](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient)
+

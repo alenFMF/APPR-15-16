@@ -2,7 +2,7 @@ require(ggplot2)
 require(dplyr)
 
 # pregled podatkov
-View(cars)
+cars %>% View
 ggplot(cars, aes(x = speed, y = dist)) + 
   geom_point()
 

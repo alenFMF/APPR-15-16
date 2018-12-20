@@ -35,7 +35,7 @@ ggdendrogram(model, rotate = FALSE, size = 2)
 
 # https://cran.r-project.org/web/packages/ggdendro/vignettes/ggdendro.html
 
-# uporabimo Wardovo metodo zdru�evanja
+# uporabimo Wardovo metodo združevanja
 model <- hclust(D,method="ward.D")
 ggdendrogram(model, rotate = TRUE, size = 2)
 
@@ -55,14 +55,18 @@ df %>% filter(p==3) %>% select(Species)
 
 ddata <- dendro_data(model, type = "rectangle")
 
-ggplot(segment(ddata)) + geom_segment(aes(x = x, y = y, xend = xend, yend = yend)) + coord_flip() + scale_y_reverse(expand = c(0.2, 0)) + theme_dendro()
+ggplot(segment(ddata)) + 
+  geom_segment(aes(x = x, y = y, xend = xend, yend = yend)) + 
+  coord_flip() + scale_y_reverse(expand = c(0.2, 0)) + 
+  theme_dendro()
 
 ddata$labels$label <- paste(iris$Species, ddata$labels$label %>% as.character)
 ddata$labels$Species <- iris$Species
 
 ggplot(segment(ddata)) + 
   geom_segment(aes(x = x, y = y, xend = xend, yend = yend)) + 
-  coord_flip()  + scale_y_reverse(expand = c(0.2, 0)) + 
+  coord_flip()  + 
+  scale_y_reverse(expand = c(0.2, 0)) + 
   geom_text(data=ddata$labels, aes(x=x, y=y, label=label, colour=Species), hjust=0, size=1) +
   theme(axis.line.y=element_blank(),
         axis.ticks.y=element_blank(),
