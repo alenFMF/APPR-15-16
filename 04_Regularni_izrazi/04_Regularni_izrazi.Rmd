@@ -1,14 +1,14 @@
 ---
 title: "Regularni izrazi"
 output:
-  ioslides_presentation:
-    incremental: yes
   beamer_presentation:
+    incremental: no
+  ioslides_presentation:
     incremental: yes
 framework: io2012
 ---
 
-## Delo z nizi
+## Delo z nizi {.build}
 
 - Skoraj vedno delamo s tekstovnim zapisom podatkov (datoteke, splet)
 - Pogosta operacija: prepoznavanje zapisa v določenem formatu
@@ -18,7 +18,7 @@ framework: io2012
 - V stolpcu imamo podatke v nizu v obliki ```"2,32.1,0.4"``` in bi radi to razbili na 3 številske stolpce
 
 
-## Vzorci
+## Vzorci  {.build}
 
 - Vizualno bi znali opisati vzorce
 - Težje bi bilo napisati kodo, ki pregleduje niz znak po znak in se odloča o ujemanju, podnizih, delitvah, ...
@@ -27,11 +27,10 @@ framework: io2012
     - jezik za opis vzorcev
     - funkcije za opis manipulacij nad nizi, ki se ujemajo z vzorci
 
-## Regularni izrazi
+## Regularni izrazi {.build}
 
 - Regularni vzorci so opisani v nizih
 - Konkretna črka/številka/znak predstavljaja vzorec za samo sebe
--
 ```r
 > niz <- "avto"
 > vzorec <- "avto"
@@ -39,36 +38,36 @@ framework: io2012
 [1] 1
 ```
 - ```grep``` - global regex print. Ali se v nizu nahaja vzorec
--
 ```r
-> nizi <- c("avto", "avtomobil", "avokado", "avtokado", "navto")
+> nizi <- c("avto", "avtomobil", "avokado", 
+            "avtokado", "navto")
 > vzorec <- "avto"
 > grep(vzorec, nizi)
 [1] 1 2 4 5
 ```
--
 ```r
 > grepl(vzorec, nizi)
 [1]  TRUE  TRUE FALSE  TRUE  TRUE
 ```
 
-## Metaznaki in posebni znaki {.smaller}
+## Metaznaki in posebni znaki {.build}
 
 - Določeni znaki so izjeme: ```. \ | ( ) [ { ^ $ * + ?```
 - ```\```- ubežni znak
 - ```.``` - kateri koli (eden) znak
 - ```^``` - začetek niza
 - ```$``` - konec niza
--
 ```r
-> grep("^avto", c("avto", "avtomobil", "avokado", "avtokado", "navto"))
+> grep("^avto", c("avto", "avtomobil", "avokado",
+       "avtokado", "navto"))
 [1] 1 2 4
 ```
--
 ```r
-> grep("^av..$", c("avto", "avtomobil", "avokado", "avtokado", "navto"))
+> grep("^av..$", c("avto", "avtomobil", "avokado",
+       "avtokado", "navto"))
 [1] 1
 ```
+## Posebni znaki  {.build}
 
 - Alfanumerični znak
 ```r
@@ -81,8 +80,6 @@ framework: io2012
 [1] 1 5 6
 ```
 
-## Posebni znaki {.smaller}
-
 - Beli znak
 ```r
 > grep("\\s", c(" ", "a", "1", "A", "%", "\t"))
@@ -93,6 +90,9 @@ framework: io2012
 > grep("\\S", c(" ", "a", "1", "A", "%", "\t"))
 [1] 2 3 4 5
 ```
+
+## Posebni znaki  {.build}
+
 - Števka
 ```r
 > grep("\\d", c(" ", "a", "1", "A", "%", "\t"))
@@ -104,7 +104,7 @@ framework: io2012
 [1] 1 2 4 5 6
 ```
 
-## Variante vzorcev {.smaller}
+## Variante vzorcev {.build}
 
 - Možnosti za en znak naštejemo v oglatem oklepju
 ```r
@@ -113,34 +113,36 @@ framework: io2012
 ```
 - Vse tričrkovne besede iz malih črk
 ```r
-> grep("^[a-z][a-z][a-z]$", c("Čas", "teče", "nič", "ne", "reče:", "tik", "tak"))
+> grep("^[a-z][a-z][a-z]$", c("Čas", "teče", "nič", 
+       "ne", "reče:", "tik", "tak"))
 [1] 6 7
 ```
 - Vse tričrkovne besede, ki se začnejo z malo ali veliko črko in so sicer iz malih črk, tudi šumnikov
 ```r
-> grep("^[a-zA-ZčšžČŠŽ][a-zčšž][a-zčšž]$", c("Čas", "teče", "nič", "ne", 
-"reče:", "tik", "tak"))
+> grep("^[a-zA-ZčšžČŠŽ][a-zčšž][a-zčšž]$", c("Čas", 
+        "teče", "nič", "ne", "reče:", "tik", "tak"))
 [1] 1 3 6 7
 ```
 
-## Variante vzorcev {.smaller}
+## Variante vzorcev {.build}
 
 - Eno ali dvomestne številke kjerkoli
 ```r
-> grep("((\\d)|([1-9]\\d))", c("1", "20", "0", "nič", "to je 100%", "09"))
+> grep("((\\d)|([1-9]\\d))", c("1", "20", "0", "nič", 
+       "to je 100%", "09"))
 [1] 1 2 3 5 6
 ```
 - Okrogli oklepaji predstavljajo skupino. Morajo biti pravilno vgnezdeni
 - Natanko eno ali dvo mestne številke
--
 ```r
-> grep("^((\\d)|([1-9]\\d))$", c("1", "20", "0", "nič", "to je 100%", "09"))
+> grep("^((\\d)|([1-9]\\d))$", c("1", "20", "0", 
+       "nič", "to je 100%", "09"))
 [1] 1 2 3
 ```
 - Pozor: okrogli oklepaji okrog možnosti navedenimi z operatorjem ```|``` so obvezni.
 
 
-## Ponavljanje vzorcev {.smaller}
+## Ponavljanje vzorcev {.build}
 
 - Operatorji za ponavljanje delujejo na prejšnji znak ali skupino
 - ```?``` - kvečjemu ena ponovitev 
@@ -151,34 +153,39 @@ framework: io2012
 - ```{m, }``` – vsaj ```m``` ponovitev 
 - Besede sestavljene iz malih črk
 ```r
-> grep("^[a-z]*$", c("slika", "je", "vredna", "1000", "besed."))
+> grep("^[a-z]*$", c("slika", "je", "vredna", 
+       "1000", "besed."))
 [1] 1 2 3
 ```
 - Brez prazne besede
 ```r
-> grep("^[a-z]+$", c("", "slika", "je", "vredna", "1000", "besed."))
+> grep("^[a-z]+$", c("", "slika", "je", "vredna", 
+       "1000", "besed."))
 [1] 2 3 4
 ```
 
-## Ponavljanja 
+## Ponavljanja {.build} 
 
 - Zaporedje besed iz malih črk ločenih s presledki
 ```r
-> grep("^([a-z]+ )*[a-z]+$", c("besede", "ali pa stavki", "123 ni"))
+> grep("^([a-z]+ )*[a-z]+$", c("besede", 
+       "ali pa stavki", "123 ni"))
 [1] 1 2
 ```
 - Besede dolžine 3-5 črk
 ```r
-> grep("^[a-z]{3,5}$", c("ta", "beseda", "nima", "pomena"))
+> grep("^[a-z]{3,5}$", c("ta", "beseda", "nima",
+       "pomena"))
 [1] 3
 ```
 - Predznačena cela števila
 ```r
-> grep("^[+-]?(0|[1-9][0-9]*)$", c("0", "+1", "01", "-99"))
+> grep("^[+-]?(0|[1-9][0-9]*)$", 
+        c("0", "+1", "01", "-99"))
 [1] 1 2 4
 ```
 
-## Podvzorci {.smaller}
+## Podvzorci {.build}
 
 - Podvzorce označimo s skupinami (okrogli oklepaji)
 - Skupine identificiamo po številki
@@ -192,10 +199,14 @@ framework: io2012
 ( -2, 7)
 (    -3   ,     45)
 ```
-- 
+
+## Podvzorci {.build}
+
 ```r
-> nizi <- c("(1,2)", "( -2, 7)", "(    -3   ,     45)", "(a, 3)")
-> vzorec <- "\\(\\s*([+-]?(0|[1-9][0-9]*))\\s*,\\s*([+-]?(0|[1-9][0-9]*))\\s*\\)"
+> nizi <- c("(1,2)", "( -2, 7)", "(    -3   ,     45)",
+            "(a, 3)")
+> vzorec <- paste0("\\(\\s*([+-]?(0|[1-9][0-9]*))\\s*,",
+            "\\s*([+-]?(0|[1-9][0-9]*))\\s*\\)")
 > lidx <- !grepl(vzorec, nizi)
 > komp1 <- sub(vzorec, "\\1", nizi)
 > komp1[lidx] <- NA
@@ -206,35 +217,41 @@ framework: io2012
 > as.integer(komp2)
 [1]  2  7 45 NA
 ```
-## Podvzorci s *strapplyc* {.smaller}
+## Podvzorci s *strapplyc* {.build}
 
 ```{r warning=FALSE}
-nizi <- c("(1,2)", "( -2, 7)", "(    -3   ,     45)", "(a, 3)")
-vzorec <- "\\(\\s*([+-]?(0|[1-9][0-9]*))\\s*,\\s*([+-]?(0|[1-9][0-9]*))\\s*\\)"
+nizi <- c("(1,2)", "( -2, 7)", "(    -3   ,     45)", 
+          "(a, 3)")
+vzorec <- paste0("\\(\\s*([+-]?(0|[1-9][0-9]*))\\s*,",
+                 "\\s*([+-]?(0|[1-9][0-9]*))\\s*\\)")
 require(gsubfn, quietly = TRUE)
 skupine <- strapplyc(nizi, vzorec)
 ```
+
+## Podvzorci s *strapplyc* {.build}
+
 ```{r}
 print(skupine)
 ```
 
-## Pridobivanje podvzorcev {.smaller}
+## Pridobivanje podvzorcev {.build}
 
 - Pomožna funkcija za ekstrahiranje `i`-tega elementa
--
 ```r
-indeks <- function(x, i) {if(length(x) >= i) x[[i]] else ""}
+indeks <- function(x, i) {
+     if(length(x) >= i) x[[i]] else ""}
 ```
 - Izpeljana funkcija s prednastavljenimi parametri
--
 ```r
 > f <- . %>% indeks(1)
 > f(c("a", "b", "c"))
 [1] "a"
 ```
 - Pozor: operator `%>%` (ang. pipe) "živi" v paketu `magrittr` (ki ga posredno uvozimo preko paketa `dplyr`)
-- funkcija `sapply` uporabi podano funkcijo na elementih zaporedja (seznama) in rezultat vrne v vektorju
--
+
+## Pridobivanje podvzorcev {.build}
+
+- Funkcija `sapply` uporabi podano funkcijo na elementih zaporedja (seznama) in rezultat vrne v vektorju
 ```r
 > x <- sapply(skupine, . %>% indeks(1)) %>% as.integer
 > y <- sapply(skupine, . %>% indeks(3)) %>% as.integer
@@ -248,47 +265,41 @@ indeks <- function(x, i) {if(length(x) >= i) x[[i]] else ""}
 
 
 
-## Razcepljanje nizov {.smaller}
+## Razcepljanje nizov {.build}
 
 - V stolpcu je več podatkov, ločenih bodisi z vejico ali podpičjem
--
 ```r
 > cudenStolpec <- c("12, 3; 8", "6,1,2")
 ````
 - Razcep po separatorju opisanim z regularnim izrazom
--
 ```r
 > spl <- strsplit(cudenStolpec, "[\\,\\;]")
 ```
 - Zadnji stolpec
--
 ```r
 > sapply(spl, function(x) as.integer(x[[3]]))
 [1] 8 2
 ```
 
-## Pridobivanje tabel iz razdelitev {.smaller}
+## Pridobivanje tabel iz razdelitev {.build}
 
 - Sestavimo ```data.frame```
--
 ```r
 > unlist(spl)
 [1] "12" " 3" " 8" "6"  "1"  "2" 
 ```
--
 ```r
 > as.integer(unlist(spl))
 [1] 12  3  8  6  1  2
 ```
--
 ```r
-> mat <- matrix(as.integer(unlist(spl)), ncol=3, byrow=TRUE)
+> mat <- matrix(as.integer(unlist(spl)), ncol=3,
+               byrow=TRUE)
 > print(mat)
      [,1] [,2] [,3]
 [1,]   12    3    8
 [2,]    6    1    2
 ```
--
 ```r
 > df <- data.frame(mat)
 > print(df)
@@ -297,9 +308,8 @@ indeks <- function(x, i) {if(length(x) >= i) x[[i]] else ""}
 2  6  1  2
 ```
 
-## Pridobivanje tabel iz razdelitev {.smaller}
+## Pridobivanje tabel iz razdelitev {.build}
 
--
 ```r
 > colnames(df) <- c("Dolžina", "Širina", "Višina")
 > print(df)
@@ -307,7 +317,6 @@ indeks <- function(x, i) {if(length(x) >= i) x[[i]] else ""}
 1      12      3      8
 2       6      1      2
 ```
--
 ```r
 > df %>% mutate(Volumen=Višina*Širina*Dolžina)
   Dolžina Širina Višina Volumen

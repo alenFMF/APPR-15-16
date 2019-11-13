@@ -1,22 +1,20 @@
 ---
 title: "Podatki na spletu"
 output:
-  ioslides_presentation:
-    incremental: yes
   beamer_presentation:
+    incremental: no
+  ioslides_presentation:
     incremental: yes
 framework: io2012
 ---
 
 
-## Pridobivanje podatkov iz spleta {.smaller}
+## Pridobivanje podatkov iz spleta {.build}
 
 - Na spletu so podatki na voljo kot:
     - vsebina spletne strani (HTML)
     - datoteka za nalaganje (ang. download)
-    - klici preko aplikacijskega programskega vmesnika (API)
-        - XML
-        - JSON
+    - klici preko aplikacijskega programskega vmesnika API (XML, JSON)
 - Spletne strani pregledujemo s spletnim brskalnikom
 - Protokol HTTP:
     - IP naslov ali URL strežnika (193.2.67.103, http://www.fmf.uni-lj.si)
@@ -26,7 +24,7 @@ framework: io2012
     - Firbug na Firefoxu (add-on)
     - "Inspect element" na Google Chrome
 
-## Protokol *HTTP* {.smaller}
+## Protokol *HTTP* {.build}
 
 - Tekstovni protokol nad protokolom TCP/IP
 - Klient pošlje poizvedbo
@@ -34,38 +32,44 @@ framework: io2012
 - V vsakem pogovoru najprej nekdo vpraša (klient), drugi pa odgovori (strežnik)
 - Dva računalnika lahko izmenjujeta vlogi
 - URL - ang. Uniform Resource Locator - identifikator vira
-- http://www.fmf.uni-lj.si:80/pot/do/vira?a=1&b=2
-    - protokol `http://`
-    - ime strežnika `www.fmf.uni-lj.si`
-        - vsako ime se preslika v IP številko
-        - za preslikavo skrbijo DNS strežniki (del TCP/IP omrežja)
-    - lokalna pot do vira na strežniku `/pot/do/vira/`
-        - lahko je to dejanska pot na disku od neke mape dalje
-        - lahko je pač samo simbolična pot (ang. route), ki sproži neko funkcijo, ki vrne odgovor
-    - parametri za poizvedbo oblike `ključ=vrednost`, za znakom `'?'`, pari so ločeni z znakom `'&'`
 
-## Zahtevek (ang. *request*) {.smaller}
+## Protokol *HTTP* {.build}
+
+- Primer: http://www.fmf.uni-lj.si:80/pot/do/vira?a=1&b=2
+- protokol `http://`
+- ime strežnika `www.fmf.uni-lj.si`
+    - vsako ime se preslika v IP številko
+    - za preslikavo skrbijo DNS strežniki (del TCP/IP omrežja)
+- lokalna pot do vira na strežniku `/pot/do/vira/`
+    - lahko je to dejanska pot na disku od neke mape dalje
+    - lahko je pač samo simbolična pot (ang. route), ki sproži neko funkcijo, ki vrne odgovor
+- parametri za poizvedbo oblike `ključ=vrednost`, za znakom `'?'`, pari so ločeni z znakom `'&'`
+
+## Zahtevek (ang. *request*) {.build}
 
 - Oblika (tekstovna):
-    - začetna vrstica (ukaz + pot do vira + št. protokola, npr. `GET /pot/do/vira/ HTTP/1.0`)
-        - ukazi: `GET`, `POST`, `DELETE`, ...
-    - ena ali več vrstic glave (ang. Header)
-        - vrstice oblike: `ključ: vrednost1, vrednost2`
-        - ena ali več tekstovnih vrednosti ločenih z vejico
-        - primer: `Last-Modified: Fri, 31 Dec 1999 23:59:59 GMT`
-    - prazna vrstica
-    - opcijsko telo zahtevka (poljuben tekst)
-        - poljuben tekst
-        - za pravilno interpretacijo imamo v glavi dva ključa:
-            - `Content-Type` - določa tip vsebine, oz. ang. MIME type (MIME = Multipurpose Internet Mail Extensions)
-            - `Content-Length` - število bytov v telesu 
-            - Primer uporabe telesa: nalaganje datoteke
+- Začetna vrstica (ukaz + pot do vira + št. protokola, npr. `GET /pot/do/vira/ HTTP/1.0`)
+    - ukazi: `GET`, `POST`, `DELETE`, ...
+- Ena ali več vrstic glave (ang. Header)
+    - vrstice oblike: `ključ: vrednost1, vrednost2`
+    - ena ali več tekstovnih vrednosti ločenih z vejico
+    - primer: `Last-Modified: Fri, 31 Dec 1999 23:59:59 GMT`
+- Prazna vrstica
+- Opcijsko telo zahtevka (poljuben tekst)
+    - poljuben tekst
+    - za pravilno interpretacijo imamo v glavi dva ključa
+        - `Content-Type` - določa tip vsebine, oz. ang. MIME type (MIME = Multipurpose Internet Mail Extensions)
+        - `Content-Length` - število bytov v telesu
+        - Primer uporabe telesa: nalaganje datoteke
             
-## Kaj pošilja spletni brskalnik? {.smaller}
+## Kaj pošilja spletni brskalnik? {.build}
 
 - V Chrome vklopimo `Inspect element`, preklopimo na `Network`
 - Vpišemo v naslovno vrstico: `http://httpbin.org/get`
 - Ko gremo na neko spletno stran preko naslova, brskalnik vedno uporabi ukaz `GET`:
+
+\tiny
+
 ```
 GET /get HTTP/1.1
 Host: httpbin.org
@@ -79,7 +83,7 @@ Accept-Language: en-US,en;q=0.8
 Cookie: _ga=GA1.2.2024541521.1447802935; _gat=1
 ```
 
-## Odgovor (ang. *response*) {.smaller}
+## Odgovor (ang. *response*) {.build}
 
 - Oblika (tekstovna) je podobna obliki zahtevka
     - začetna vrstica (št. protokola + koda odgovora + opis odgovora)
@@ -94,10 +98,11 @@ Cookie: _ga=GA1.2.2024541521.1447802935; _gat=1
     - 4xx - napaka na strani klienta (npr. `404 Not Found`, vir ne obstaja)
     - 5xx - napaka na strani strežnika (npr. `500 Server Error`, strežnik se je pokvaril, ...)
     
-## Kaj bi pa odgovoril strežnik? {.smaller}
-
+## Kaj bi pa odgovoril strežnik? {.build}
 - Na prejšnji zahtevek strežnik odgovori takole
-- 
+
+\tiny
+
 ```
 HTTP/1.1 200 OK
 Server: nginx
@@ -124,8 +129,9 @@ Access-Control-Allow-Credentials: true
   "url": "http://httpbin.org/get"
 }
 ```
+\normalsize
 
-## Knjižnica *httr* {.smaller}
+## Knjižnica *httr* {.build}
 
 - Enostavna knjižnica za uporabo protokola HTTP
 - Opis: https://github.com/hadley/httr/blob/master/vignettes/quickstart.Rmd
@@ -136,44 +142,47 @@ r <- GET("http://httpbin.org/get")
 status_code(r)
 ```
 - Glava:
+
+\tiny
+
 ```{r}
 headers(r)
 ```
 
-## Vsebina
+## Vsebina  {.build}
 
 - Za testiranje komunikacije bomo uporabili strežnik `http://httpbin.org` in vire na njemu
 - Niz v JSONU, ki ga vrne vir `/get` - opis zahtevka 
+
+\tiny
+
 ```{r}
 content(r, "text")
 str(content(r))
 ```
 
-## Obravnava vsebine
+
+## Obravnava vsebine {.build}
 
 - Branje tekstovne vsebine v kodni tabeli
--
 ```r
 content(r, "text", encoding = "ISO-8859-1")
 ```
 - Detekcija kodne tabele iz besedila (načeloma bi morala kodna tabela biti napisana v glavi)
--
 ```r
 stringi::stri_enc_detect(content(r, "raw")).
 ```
 - Obravnava binarnih datotek
--
 ```r
 bin <- content(r, "raw")
 writeBin(bin, "datoteka.txt")
 ```
 
-## Parametri
+## Parametri {.build}
 
 - Parametri so mehanizem za pošiljanje parametrov na vir (podobno kot parametri pri funkcijah)
 - Vir na strežniku (lahko) uporabi parametre
 - Parametri so zakodirani v nizih
-- 
 ```r
 r <- GET("http://httpbin.org/get", 
   query = list(key1 = "value1", key2 = "value2")
@@ -182,7 +191,7 @@ content(r)$args
 ```
 - Če so v seznamu vrednosti `NULL` se ignorirajo
 
-## "Kukiji" (ang. Cookies) {.smaller}
+## "Kukiji" (ang. Cookies) {.build}
 
 - Mehanizem, ki ga uporabljajo brskalniki in strežniki za komunikacijo stanja
 - Slovar vrednosti (ključ=vrednost)
@@ -195,7 +204,7 @@ content(r)$args
     - avtentifikacijski žetoni (ang. token)
 - Kukiji imajo lahko rok trajanja (brskalnik pretečene kukije ne pošilja v zahtevkih)
 
-## Kukiji in ključi v glavi
+## Kukiji in ključi v glavi {.build}
 
 - Primer uporabe na testnem strežniku http://httpbin.org
 ```r
@@ -204,14 +213,20 @@ cookies(r)
 ```
 - Na viru je funkcija, ki prebere parametre in vrne odgovor, kjer zahteva od brskalnika nastavitev vrednosti v cookie za ta URL strežnika
 - Če večkrat zaženemo zgornjo kodo z različnimi parametri vidimo, da se vrednosti hranijo med zahtevki
+
+## Kukiji in ključi v glavi {.build}
+
 - Nastavljanje ključev v glavi
--
-```r
-r <- GET("http://httpbin.org/get", add_headers(Name = "Hadley"))
+
+\tiny
+
+```{r}
+r <- GET("http://httpbin.org/get", 
+    add_headers(Name = "Hadley"))
 str(content(r)$headers)
 ```
 
-## POST
+## POST {.build}
 
 - ukaz *POST* se tipično uporablja, ko pošiljamo vsebino in pričakujemo, da bo vir z njo nekaj naredil
 - Obnašanje je podobno kot pri klicu funkcije
@@ -222,33 +237,28 @@ str(content(r)$headers)
 
 ## POST
 
--
 ```r
 url <- "http://httpbin.org/post"
 body <- list(a = 1, b = 2, c = 3)
 ```
 - Kodiranje slovarja v obliki HTML forme
--
 ```r
 r <- POST(url, body = body, encode = "form")
 ```
-- <a href="https://en.wikipedia.org/wiki/MIME#Multipart_messages">Večdelno sporočilo</a>
--
+- Večdelno sporočilo: https://en.wikipedia.org/wiki/MIME#Multipart_messages
 ```r
 r <- POST(url, body = body, encode = "multipart")
 ```
 - Parametri v telesu v obliki JSON-a
--
 ```r
 r <- POST(url, body = body, encode = "json")
 ```
 - Pregled zahtevka
--
 ```r
 POST(url, body = body, encode = "form", verbose())
 ```
 
-## Format XML
+## Format XML {.build}
 
 - XML - ang. Extensible Markup Language
 - Podoben kot HTML, le strožjo pogoji za sintakso
@@ -261,10 +271,9 @@ POST(url, body = body, encode = "form", verbose())
     - nekaj preddefiniranih značk (`&lt; = <`, `&gt; = >`, `&amp; = &`, `&apos = '`, `&quot; = "`)
     - UTF-8, uvodna vrstica
  
-## Primer
+## Primer {.build}
 
 - http://www.w3schools.com/xml/note.xml
--
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <note>
@@ -275,7 +284,7 @@ POST(url, body = body, encode = "form", verbose())
 </note>
 ```
 
-## Prednosti formata
+## Prednosti formata {.build}
 
 - Posplošeni bralniki (razčlenjevalniki)
     - DOM Parser - prebere celo drevo, po katerem lahko brskamo
@@ -288,12 +297,15 @@ POST(url, body = body, encode = "form", verbose())
 - Slabost: predolg, a lahko kompresiramo (zip)
 - Npr. Wordove datoteke `.xlsx` so zazipane XML datoteke
 
-## JSON {.smaller}
+## JSON {.build}
 
 - Izgleda kot struktura iz vgnezdenih slovarjev in seznamov v Pyhtonu
 - Odgovor na XML, ki je tipično predolg
     - Še bolj ekstremen format: Apache AVRO ()
 - Primer: odgovor vira: http://httpbin.org/get
+
+\tiny
+
 ```
 {
   "args": {}, 
@@ -310,7 +322,7 @@ POST(url, body = body, encode = "form", verbose())
 }
 ```
 
-## XPATH
+## XPATH {.build}
 
 - Jezik za poizvedbe po XML dokumentu (DOM drevesu)
 - DOM - Document object model
@@ -318,7 +330,7 @@ POST(url, body = body, encode = "form", verbose())
     - parametri so atributi vozlišč
     - besedila med značkami so tekstovna vozlišča (listi drevesa)
 
-## Primer
+## Primer {.build}
 
 - Oglejmo si spletno stran: http://www.fmf.uni-lj.si/si/iskanje?q=.&cmd=+I%C5%A1%C4%8Di+&m=any&wm=beg
 
