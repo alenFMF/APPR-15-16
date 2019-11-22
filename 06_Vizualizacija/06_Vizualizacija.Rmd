@@ -152,12 +152,13 @@ ggplot(data=Orange, aes(x=circumference, y=age)) +
 ## Primeri {.build}
 
 ```{r}
-ggplot(data=Orange, aes(x=circumference, y=age, col=Tree))  + 
+ggplot(data=Orange, 
+  aes(x=circumference, y=age, col=Tree))  + 
   geom_line()
 ```
 
 ## Primeri {.build}
-
+\tiny
 ```{r}
 head(iris)
 ```
@@ -184,7 +185,7 @@ ggplot(data=iris, aes(x=Petal.Length, fill=Species)) +
 ```
 
 ## Primeri {.build}
-
+\tiny
 ```{r}
 require(ggplot2movies)
 head(movies)
@@ -341,7 +342,8 @@ head(economics)
 ## Primeri {.build}
 
 ```{r}
-ggplot(data=economics, aes(x=date, y=unemploy)) + geom_line()
+ggplot(data=economics, aes(x=date, y=unemploy)) + 
+  geom_line()
 ```
 
 ## Primeri {.build}
@@ -373,7 +375,8 @@ ggplot(data=myMovies,aes(Budget)) +
 ## Primeri {.build}
 
 ```{r warning=FALSE}
-ggplot(data=subset(myMovies, RoundYear>1980), aes(Budget)) + 
+ggplot(data=subset(myMovies, RoundYear>1980), 
+       aes(Budget)) + 
   geom_histogram(binwith=1) + 
   facet_grid(. ~ Type+RoundYear) + 
   scale_x_log10()
