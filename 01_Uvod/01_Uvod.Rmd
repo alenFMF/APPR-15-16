@@ -32,7 +32,7 @@ knitr::include_graphics('./viri/job-trends.png')
 - Ugotavljajo, kakšne podatke lahko dobijo
 - Pridobivajo podatke
 - Čistijo podatke
-- Izvajajo raziskovalne analizo (ang. exploratory analysis)
+- Izvajajo raziskovalne analize (ang. exploratory analysis)
 - Sestavljajo predikcijske modele
 - Interpretirajo rezultate
 - Kritično vrednotijo rezultate
@@ -40,13 +40,13 @@ knitr::include_graphics('./viri/job-trends.png')
 - Poskrbijo za ponovljivost analiz (dokumentacija, koda, verzije, ...)
 - Objavijo rezultate in jih distribuirajo
 
-## Kompetence podatkovnih analitikov
+## Kompetence podatkovnih analitikov {.small}
 
 - Dobro poznavanje domene raziskav
 - Dobro poznavanje matematike in statistike
 - Dobro poznavanje programerskih veščin (t.i. hackerski duh)
 - 
-```{r echo=FALSE, out.width='60%'}
+```{r echo=FALSE, out.width='40%'}
 knitr::include_graphics('./viri/three-circles.png')
 ```
 - http://drewconway.com
@@ -102,15 +102,14 @@ knitr::include_graphics('./viri/three-circles.png')
 - ```list``` - seznami lahko vsebujejo objekte različnih podatkovnih tipov
 - ```data.frame``` - razpredelnice - dvo-dimenzionalne podatkovne tabele s poimenovanimi stolpci kot vektorji (standardna oblika podatkov za izvajanje analiz)
 
-## Osnovni objekti in izpis {.build}
+## Osnovni objekti in izpis {.smaller .build}
 
-- 
 ```r
 > a <- 1     # <- prireditveni operator, lahko uporabimo tudi '='
 > class(a)   # izpis tipa objekta
 [1] "numeric"
 ```
-- 
+
 ```r
 > b = 1L     # eksplicitna zahteva vnosa celega števila
 > class(b)
