@@ -50,13 +50,14 @@ uvoz <- read_csv2("viri/0955201ss.csv",
                      
 View(uvoz)
 
+# Preverimo tip stolpcev
 sapply(uvoz, class)
 
-# Zaradi 'hierarhičnega uvoza' bi radi, da se vsi dimenzijski stolpci ponavljajo (razen STUDIJSKO_LETO !)
+# Zaradi 'hierarhično kompresiranega uvoza' bi radi, da se vsi dimenzijski stolpci ponavljajo (razen STUDIJSKO_LETO !)
 
 podatki <- uvoz %>% 
-           fill(1:5) %>% 
-           drop_na(STUDIJSKO_LETO)
+  fill(1:5) %>% 
+  drop_na(STUDIJSKO_LETO)
 
 podatki %>% View
 
@@ -90,6 +91,7 @@ zdruzena %>% View
 
 sapply(zdruzena, class)
 
+zdruzena %>% View
 # Vse vrstice, v katerih so ženske
 
 filter(zdruzena, SPOL=="Ženske")
@@ -154,7 +156,7 @@ zdruzena %>%
   select(VRSTA_IZOBRAZEVANJA, SPOL, ST_STUDENTOV) %>% 
   group_by(VRSTA_IZOBRAZEVANJA, SPOL) %>% 
   summarize(STEVILO=sum(ST_STUDENTOV, na.rm=TRUE)) %>% 
-  spread(SPOL, STEVILO) %>% 
+  pivot_wider(names_from=SPOL, values_from=STEVILO) %>% 
   arrange(VRSTA_IZOBRAZEVANJA) %>% 
   mutate(
     deležMoški=round(Moški/(Moški + Ženske), 2), 
@@ -180,15 +182,14 @@ read_csv2("viri/0955201ss-nova-nontidy.csv",
             NACIN_STUDIJA = 4
           ) %>% 
           fill(1:4) %>% 
-          .[4:nrow(.), ] %>% 
-          # drop_na(NACIN_STUDIJA) %>%
+          drop_na(NACIN_STUDIJA) %>% 
           filter(
             VISOKOSOLSKI_ZAVOD != "Visokošolski zavodi - SKUPAJ",
             VRSTA_IZOBRAZEVANJA != "Vrsta izobraževanja - SKUPAJ",
             LETNIK != "Letniki - SKUPAJ",
             NACIN_STUDIJA != "Način študija - SKUPAJ"
           ) %>% 
-          gather(SOLSKO_LETO, ST_STUDENTOV, -1:-4) %>%
+          pivot_longer(-(1:4), names_to="SOLSKO_LETO", values_to="ST_STUDENTOV") %>% 
           separate(SOLSKO_LETO, into=c("LETO", "DRUGO_LETO"), sep='/') %>% 
           # View
           # pull(LETO) %>%

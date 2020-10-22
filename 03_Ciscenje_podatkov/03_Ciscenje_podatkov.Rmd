@@ -10,50 +10,53 @@ framework: io2012
 
 ## Datoteke iz statističnega urada {.build}
 
-- http://www.stat.si/
-- Zavihek ```Podatki```, ```Izobraževanje```, kliknemo link ``` Izobraževanje``` na podnaslovu nižje na strani ```Več tabel v podatkovni bazi SI-STAT```
-- Izberemo ```Terciarno izobraževanje```, ```Vpisani v visokošolsko izobraževanje```
-- Izberemo kako od tabel tam. Mi bomo uporabili eno staro CSV datoteko.
-- Opomba: ta tabela mogoče ni več dosegljiva preko direktnega brskanja.
-- Nastavimo filtre, način prikaza tabele (izvoza) kot ```Prikaz tabele na zaslonu```, za vsak tip podatka izberemo vse možnosti, razen tistih, ki so sumarne (v imenu je ```SKUPAJ```)
-- Gumb ```Izpis podatkov```
-- Podatki se prikažejo kot tabela na zaslonu
+- https://www.stat.si/
+- Meni zgoraj `Področja`, izberemo `Izobraževanje`, v podmeniju izberemo `Višješolsko, visokošolsko izobraževanje`.
+- Nižje na strani najdemo razdelek `Več tabel v podatkovni bazi SI-STAT`, kliknemo `Izobraževanje`.
+- Pomaknemo se za zaslon nižje na strani do drevesnega pogleda izberemo: `Razžiri vse`, `Izobraževanje`, `Višješolsko, visokošolsko izobraževanje`, `Vpisani v visokošolsko izobraževanje`, tabela s šifro `0955201S`.
+
+## Izbor oblike podatkov {.build}
+
+- Izberemo vse možnosti v 5 dimenzijah podatkov (razen agregatov `SKUPAJ`).
+- Nižje pri gumbu `Izpis podatkov` izberemo `Prikaži tabelo na zaslonu, prikaz 2`.
+- S pomočjo operacij vrtenja tabel spravimo podatke v željeno obliko in izvozimo.
+
 
 ## Tabele s hierarhičnimi indeksi {.build}
 
-- Privzet prikaz tabele je s hieararhičnimi indeksi
+- Primer:
 ```{r echo=FALSE, out.width='80%'}
 knitr::include_graphics('viri/hierarhicno.png')
 ```
 
-- S hierarhičnimi indeksi je težko delati
-- R nima dobre podpore (npr. Python Pandas ima)
+- S hierarhičnimi indeksi je težko delati.
+- R nima dobre podpore (npr. Python Pandas ima).
 
 ## "Navadne tabele" {.build}
 
-- Bolj smiselno bi bilo imeti podatke v obliki tabele s stolpci:
+- Tabele poskušamo spraviti v obliko "ena meritev-ena vrstica".
+- Meritev je število vpisanih.
+- Vsi drugi podatki določajo dimenzije, pri katerih je opravljena meritev.
+- Tabelo želimo v taki obliki:
     - VISOKOŠOLSKI ZAVOD
     - VRSTA IZOBRAŽEVANJA
     - LETNIK
     - NAČIN ŠTUDIJA
-    - SPOL
     - ŠTUDIJSKO LETO
     - ST_STUDENTOV
-- Na takih tabelah obstaja t.i. "Relacijska algebra", ki je osnova za delo s tabelami v podatkovnih bazah
-- Dobra podpora teorije in funkcij za izvajanje operacij
+- S takimi podatki je v R lažje delati.
 
 ## Obdelava in pridobivanje podatkov {.build}
 
-- Ročno "zavrtimo" tabelo
-- Izvozimo v obliki "Razmejena datoteka z glavo .csv"
-- Ogledamo si format CSV v tekstovni datoteki
-- Ogledamo si še datoteko v Excelu
-- Prve 4 vrstice so nepomembne
-- Tabela nima glave
-- Vsebina v prvih nekaj stolpcih je še vedno podana hierarhično
-- Nimamo glave tabele
+- Ročno zavrtimo tabelo.
+- Izvozimo v obliki `CSV (ločeno s podpičjem) z glavo`.
+- Za namene demonstracije dela s čiščenjem podatkov, bomo uporabili še "staro" datoteko, ki ima še kompleksnejšo strukturo in dodatno dimenzijo `SPOL` (`viri/0955201ss.csv`).
+- Ogledamo si format CSV v tekstovni datoteki.
+- Ogledamo si še datoteko v Excelu.
+- Prve 4 vrstice so nepomembne.
+- Tabela nima glave.
+- Vsebina v prvih nekaj stolpcih je še vedno podana hierarhično.
 - Prazna polja so označena kot "-"
-- Imena stolpcev niso definirana
 
 ## Branje tabele {.build}
 
@@ -76,12 +79,12 @@ uvoz <- read_csv2("0955201ss.csv",
 ```r
 problems(uvoz)  
 ```
-- Vizualno pregledamo:
+- Vizualno pregledamo, kaj se je uvozilo:
 ```r
 View(uvoz)
 ```
 
-## Branje tabele
+## Branje tabele {.build}
 
 - V uvozu imamo samo en stolpec!
 - Definirajmo stolpce
@@ -95,9 +98,11 @@ uvoz <- read_csv2("0955201ss.csv",
                   locale=locale(encoding="cp1250"),
                   col_names=stolpci)
 ```
+-
 ```r
 problems(uvoz)
 ```
+-
 ```r
 View(uvoz)
 ```
@@ -133,48 +138,32 @@ uvoz <- read_csv2("0955201ss.csv",
 
 ## Obdelava podatkov {.build}
 
-- Zaradi 'hierarhičnega uvoza' bi radi, da se vsi dimenzijski stolpci ponavljajo v vrsticah do naslednjega vnosa
+- Zaradi 'hierarhično kompresiranega uvoza' bi radi, da se vsi dimenzijski stolpci ponavljajo v vrsticah do naslednjega vnosa
 - Izjema je stolpec `STUDIJSKO_LETO`
 ```r
-podatki <- uvoz %>% fill(1:5) %>% drop_na(STUDIJSKO_LETO)
-```
-- PAZI! Operator `%>%` iz knjižnice `dplyr` pomeni: Rezultat izraza pred operatorjem uporabi kot prvi argument naslednje funkcije
-- Princip kodiranja s pomočjo operatorja `%>%` imenujemo *veriženje* (ang. chaining)
-
-## Obdelava podatkov {.build}
-
-- Ko se navadimo postane koda zelo berljiva (začnemo s tem, potem najprej naredimo to, potem to, potem to ...)
-```r
 podatki <- uvoz %>% 
-          fill(1:5) %>% 
-          drop_na(STUDIJSKO_LETO)
-```
-- Alternativa je gnezdenje klicev funkcij -> NEPREGLEDNO
-```r
-podatki <- drop_na(fill(uvoz, 1:5), STUDIJSKO_LETO))
+      fill(1:5) %>% 
+      drop_na(STUDIJSKO_LETO)
 ```
 
-## Obdelava podatkov {.build}
+## Pregled tipov stolpcev {.build}
 
 - Preverimo tipe stolpcev
 ```r
-sapply(zdruzena, class)
+sapply(podatki, class)
 ```
-- Tip stolpca `ST_STUDENTOV` bi moral biti `integer`. 
-- Uporabimo funkcije iz paketa `readr` za pretvorbo stolpcev iz nizov
-```r
-zdruzena$ST_STUDENTOV <-
-  parse_integer(zdruzena$ST_STUDENTOV)
-```
+- Tipi so ustrezni.
+- Če bi v kakšnem številskem stolpcu imeli kak "zatipk", bi verjetno uvozili ta stolpec kot tip `character`.
+- Tak stolpec bi najprej obdelali kot vektor nizov in potem stolpec pretvorili (npr. s funkcijo `parse_integer()` iz paketa `readr`).
 
 ## Relacijski model {.build}
 
-- Podatke organiziramo kot množico večih tabel (```data.frame```-ov) 
-- Model je v osnovi star več kot 35 let
+- Podatke organiziramo kot množico večih tabel (```data.frame```-ov).
+- Model je v osnovi star več kot 40 let.
 - Uporablja se v večini večjih poslovnih sistemov, relacijskih podatkovnih bazah
-- Enostaven za razumevanje, pregleden
-- Omogoča zmogljive poizvedbe v standardiziranem jeziku SQL (na podatkovnih bazah) in podobno zmogljive poizvedbe/operacije v R
-- Podpira učinkovite implementacije (pri podatkovnih bazah in v R)
+- Enostaven za razumevanje, pregleden.
+- Omogoča zmogljive poizvedbe v standardiziranem jeziku SQL (na podatkovnih bazah) in podobno zmogljive poizvedbe/operacije v R.
+- Podpira učinkovite implementacije (pri podatkovnih bazah in v R).
 
 ## Relacijska algebra {.build}
 
@@ -184,7 +173,7 @@ zdruzena$ST_STUDENTOV <-
 - Operatorji so operacije, ki sprejmejo relacije (tabele) in vrnejo (nove) relacije (tabele).
 - *Shema relacije* = definicija tabele (imena + tipi).
 
-## Operatorji relacijske algebre {.build}
+## Operatorji relacijske algebre {.small .build}
 - Operatorji so odvisni od shem relacij nad katerimi jih izvajamo.
 - $\sigma_{p}(R)$ - izberi vrstice v relaciji $R$, ki ustrezajo pogoju $p$.    
     - Pogoj je lahko logični izraz. 
@@ -192,17 +181,17 @@ zdruzena$ST_STUDENTOV <-
     - Primer: operator ```[pogoj,]``` v kombinaciji z logičnim indeksom
 - $\pi_{a_1, a_2, \ldots, a_n}(R)$ - izberi stolpce z imeni $a_1, a_2, \ldots, a_n$ relacije $R$ in vrni novo tabelo s shemo, ki jo določajo definicije teh stolpcev. 
     - Število vrstic ostane nespremenjeno.
-    - Primer: operator ```[vektor_imen]```
-- $\rho_{a/b}(R)$ - spremeni ime stolpcu $a$ v $b$. Vrni enako tabelo (glede vrstic), le z drugo shemo.
-    - Primer: preimenovanje stolpca preko ```names(df)[[ime]] <- novo_ime```
+    - Primer: operator ```[vektor_imen]```.
     
 ## Operatorji relacijske algebre {.build}
 
+- $\rho_{a/b}(R)$ - spremeni ime stolpcu $a$ v $b$. Vrni enako tabelo (glede vrstic), le z drugo shemo.
+    - Primer: preimenovanje stolpca.
 - $R \cup S$ - vrni relacijo z unijo vrstic, če imata relaciji $R$ in $S$ enaki shemi.
 - $R \setminus S$ - vrni relacijo z razliko vrstic, če imata relaciji $R$ in $S$ enaki shemi.
 - $R \times S$ - vrni kartezični produkt relacij (vsaka vrstica $R$ z vsako vrstico $S$). 
      - Shema rezultata sta združeni shemi.
-     - Ni tako uporabna operacija, so pa uporabne ustrezne učinkovite izvedbe s filtriranjem (združitve)
+     - Ni tako uporabna operacija, so pa uporabne ustrezne učinkovite izvedbe s filtriranjem (združitve).
 
 ## Operacija JOIN {.build}
 
@@ -215,10 +204,14 @@ knitr::include_graphics('viri/join.png')
 
 Vir: Wikipedia. 
 
+- "Sklic" med tabelami.
+- Levi join, desni join, navaden join.
+
+
 ## Paket *dplyr* {.smaller}
 
-- Podpira operacije iz relacijske algebre
-- Učinkovita implementacija
+- Podpira operacije iz relacijske algebre.
+- Učinkovita implementacija.
 - Alternativa: uporaba paketa ```data.table```
 - https://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html
 - https://cran.r-project.org/web/packages/dplyr/vignettes/two-table.html
@@ -256,41 +249,45 @@ table(podatki$LETNIK)
 > letniki <- c("1","2","3","4","5","6","Abs")
 ```
 
-## Popravljanje stolpca ```LETNIK``` {.build}
+## Popravljanje stolpca ```LETNIK``` {.small .build}
 
-- Ustvarimo "relacijo" s temi dvemi stolpci
+- Ustvarimo "relacijo" s temi dvemi stolpci.
 ```r
-> tab2 <- data.frame(letnik=letniki, ime=imena)
-> tab2$ime <- as.character(tab2$ime)
+> tab2 <- data.frame(
+    letnik=letniki, 
+    ime=imena, 
+    stringsAsFactors = FALSE)
 ```
 - Uporabimo operacijo ```inner_join``` po stolpcih ```LETNIK``` IN ```ime```
 ```r
 > require(dplyr)
-> zdruzena <- podatki %>% inner_join(tab2, c("LETNIK"="ime"))
+> zdruzena <- podatki %>% 
+    inner_join(tab2, c("LETNIK"="ime"))
 ```
+- Lahko bi še odstranili stolpec `LETNIK` in stolpec `letnik` preimenovali ...
 
 ## Poizvedbe {.build}
 
-- Uporabi operacije iz relacijske algebre pravimo *poizvedba*
-- Ime izhaja iz relacijskih podatkovnih baz in jezika SQL, ki izvaja operacije in iz obstoječih tabel (relacij) preko operacij proizvajajo nove tabele (relacije)
-- Vrni tabelo z vrsticami, ki pripadajo ženskam
+- Uporabi operacije iz relacijske algebre pravimo *poizvedba*.
+- Ime izhaja iz relacijskih podatkovnih baz in jezika SQL, ki izvaja operacije in iz obstoječih tabel (relacij) preko operacij proizvajajo nove tabele (relacije).
+- Vrni tabelo z vrsticami, ki pripadajo ženskam.
 ```r
 > filter(zdruzena, SPOL=="Ženske")
 ```
-- Ekvivalentno opratorju ```[pogoj,]```
-- Bolj po dplyr-jevsko
+- Ekvivalentno operatorju ```[pogoj,]```
+- Bolj po dplyr-jevsko:
 ```r
 > zdruzena %>% filter(SPOL=="Ženske")
 ```
 
 ## Poizvedbe {.build}
 
-- Vse vrstice, v katerih so ženske vpisane po letu 2011
+- Vse vrstice, v katerih so ženske vpisane po letu 2011.
 ```r
 > zdruzena %>% filter(SPOL=="Ženske" & 
     STUDIJSKO_LETO > 2011)
 ```
-- Namesto operatorja "&" lahko pogoje ločimo z vejico
+- Namesto operatorja "&" lahko pogoje ločimo z vejico.
 ```r
 > zdruzena %>% filter(SPOL=="Ženske", 
     STUDIJSKO_LETO > 2011)
@@ -298,22 +295,23 @@ table(podatki$LETNIK)
 
 ## Operacija ```arrange``` {.build}
 
-- Uredi po stolpcu ```ST_STUDENTOV```
+- Uredi po stolpcu ```ST_STUDENTOV```.
 ```r
 > zdruzena %>% arrange(ST_STUDENTOV)
 ```
-- Uredi po stolpcih ```STUDIJSKO_LETO``` in potem po stolpcu ```ST_STUDENTOV```, in sicer padajoče
+- Uredi po stolpcih ```STUDIJSKO_LETO``` in potem po stolpcu ```ST_STUDENTOV```, in sicer padajoče.
 ```r
 > zdruzena %>% arrange(STUDIJSKO_LETO, desc(ST_STUDENTOV))
 ```
 
 ## Operaciji ```select``` in ```rename``` {.build}
 
-- Izberi samo stolpce ```STUDIJSKO_LETO```, ```ST_STUDENTOV``` in ```SPOL``` 
+- Izberi samo stolpce `STUDIJSKO_LETO`, `ST_STUDENTOV` in `SPOL` 
 ```r
-> zdruzena %>% select(STUDIJSKO_LETO, ST_STUDENTOV, SPOL)
+> zdruzena %>% 
+    select(STUDIJSKO_LETO, ST_STUDENTOV, SPOL)
 ```
-- Ob tem še preimenuj stolpec ```STUDIJSKO_LETO``` v ```LETO```.
+- Ob tem še preimenuj stolpec `STUDIJSKO_LETO` v `LETO`.
 ```r
 > zdruzena %>% 
     select(LETO=STUDIJSKO_LETO, ST_STUDENTOV, SPOL)
@@ -327,9 +325,10 @@ table(podatki$LETNIK)
 
 - Za katera leta imamo podatke?
 ```r
-> zdruzena %>% select(STUDIJSKO_LETO) %>% distinct()
+> zdruzena %>% 
+      select(STUDIJSKO_LETO) %>% 
+      distinct()
 ```
-- Operator ```%>%``` iz paketa ```dplyr``` nam omogoča "pythonovske" klice kot za metode in s tem veriženje operacij (poveča preglednost kode)
 - Koliko študentov je bilo vpisanih vsako leto?
 ```r
 > zdruzena %>% 
@@ -339,9 +338,9 @@ table(podatki$LETNIK)
 
 ## Združevanje po vrsticah {.build}
 
-- Najprej smo združili vrstice po istih vrednostih v stolpcu ```STUDIJSKO_LETO```, potem pa uporabili združevalno funkcijo na nekem od preostalih stolpcev.
+- Najprej smo združili vrstice po istih vrednostih v stolpcu `STUDIJSKO_LETO`, potem pa uporabili združevalno funkcijo na nekem od preostalih stolpcev.
 - V rezultatu so le smiselni stolpci.
-- Združevalne funkcije: ```min(x)```, ```max(x)```, ```mean(x)```, ```sum(x)```, ```sd(x)```, ```median(x)```, ```IQR(x)```, ```n(x)```, ```n_distinct(x)```, ```first(x)```, ```last(x)``` in ```nth(x, n)```
+- Združevalne funkcije: ```min(x)```, ```max(x)```, ```mean(x)```, ```sum(x)```, ```sd(x)```, ```median(x)```, ```n(x)```, ```n_distinct(x)```, ```first(x)```, ```last(x)``` in ```nth(x, n)```
 
 
 ## Združevanje {.build}
@@ -352,6 +351,9 @@ table(podatki$LETNIK)
     group_by(SPOL, STUDIJSKO_LETO) %>% 
     summarize(VPIS=sum(ST_STUDENTOV, na.rm=TRUE))
 ```
+
+## Združevanje {.build}
+
 - Koliko žensk in koliko moških je bilo vpisanih na posameznih vrstah študija na univerzi in kakšni so njihovi deleži?
 ```r
 > zdruzena %>% 
@@ -359,7 +361,7 @@ table(podatki$LETNIK)
   select(VRSTA_IZOBRAZEVANJA, SPOL, ST_STUDENTOV) %>%
   group_by(VRSTA_IZOBRAZEVANJA, SPOL) %>%
   summarize(STEVILO=sum(ST_STUDENTOV, na.rm=TRUE)) %>%
-  spread(SPOL, STEVILO) %>%
+  pivot_wider(names_from=SPOL, values_from=STEVILO) %>%
   arrange(VRSTA_IZOBRAZEVANJA) %>%
   mutate(
     deležMoški=round(Moški/(Moški + Ženske), 2), 
@@ -370,114 +372,21 @@ table(podatki$LETNIK)
 
 ## Organizacija podatkov {.build}
 
-- Podatke si skušamo organizirati v obliko, ki se ji reče <a href="https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html">Tidy data</a>
-- Paketa ```dplyr``` in ```ggplot2``` (za vizualizacijo) sta še posebej prilagojena za to vrstno obliko podatkov
-- Taka organizacija podatkov je povezana s t.i. *normalizacijo relacij* pri relacijskih podatkovnih bazah in v relacijski algebri
+- Podatke si skušamo organizirati v obliko, ki se ji reče <a href="https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html">Tidy data</a>.
+- Stolpci lahko predstavljajo spremenljivke ali meritve.
+- Spremenljivke opisujejo parametre pri katerih je izvedene meritev ("dimenzije").
+- Definicija "Tidy data":
+    - vsaka spremenljivka tvori stolpec,
+    - za vsako meritev imamo eno vrstico,
+    - vsak tip meritve je v ločeni tabeli.
 
-## Normalizacija {.build}
-
-- *Normalizacija* je proces v katerem sistematično pregledamo relacije (tabele) in anomalije. Ko identificiramo anomalijo relacijo razbijemo na dve novi.
-- Med procesom normalizacije ponavadi dobimo še globji vpogled, kakšna bo interakcija med podatki v različnih tabelah.
-- Normalizacija nam pomaga odstraniti redundantnost zapisa podatkov.
-- Ampak zato moramo morda delati več `join`-ov.
-- Včasih se zaradi učinkovitosti namerno odločimo, da ne izvedemo nekega koraka normalizacije (npr. za namene določenih hitrih analiz).
-
-
-## Funkcijska odvisnost {.build}
-
-- *Funkcijska odvisnost* opisuje odnos med stolpci znotraj iste relacije (tabele).
-- Stolpec je funkcijsko odvisen od drugega, če lahko s pomočjo vrednosti prvega stolpca v neki vrstici impliciramo vrednost drugega stolpca v isti vrstici.
-- Primer: Številka študenta implicira študij študenta.
-- Za nakazovanje funkcijske odvisnosti uporabimo simbol `->`
-- Stolpec je lahko funkcijsko odvisen od kombinacije večih stolpcev.
-- Primer: `Solsko_leto, Predmet -> Predavatelj`
-
-## Ključ {.build}
-
-- Ključ: eden ali več stolpcev, ki enolično določajo vrstico.
-- Izbor ključev temelji na konkretni aplikaciji baze. Kaj je ključ izvemo velikokrat iz konteksta in od uporabnikov.
-- Za ključ vedno velja: `Ključ -> vsi ostali stolpci`.
-- Obstajajo lahko funkcijske odvisnosti, ki na levi strani nimajo (samo) ključev.
-- Kaj z njimi?
-
-## Vrste normalizacij {.build}
-
-- Vrste:
-    - Prva normalizirana oblika (1NF)
-    - Druga normalizirana oblika (2NF)
-    - Tretja normalizirana oblika (3NF)
-    - Boyce-Codd normalizirana  (BCNF)
-    - Četrta normalizirana oblika (4NF)
-    - Peta normalizirana oblika (5NF)
-- Vsaka naslednja oblika vsebuje prejšnjo.
-
-## Normalizacija {.build}
-
-Normalizacija v ustrezno obliko poteka na naslednji način:
-
-- Določimo ključe vsake relacije (tabele).
-- Določimo funkcijske odvisnosti.
-- Preverimo ali so kršene zahteve ustrezne definicije.
-- Če pride do kršitve v neki relaciji, potem to relacijo (tabelo) razdelimo na dve relaciji.
-- Ponovno preverimo pogoje za izbrano obliko.
-- http://holowczak.com/database-normalization/
-
-## 1NF = predpostavke za relacijo {.build}
-
-- Pogoji:
-    - Vsaka vrstica ima za določen stolpec samo eno vrednost. 
-    - Podatki v stolpcu so istega tipa.
-    - Isto ime stolpca se lahko pojavi le enkrat v relaciji.
-    - Vrstni red stolpcev ni važen.
-    - Nobeni dve vrstici ne smeta biti enaki.
-    - Vrstni red vrstic ni važen.
-
-## <a href="http://holowczak.com/database-normalization/6/">2NF</a> {.build}
-
-- Ključ (ang. superkey): katera koli skupina stolpcev, za katere ne obstajata dve vrstici z istima vrednostima v teh stolpcih. Vsi drugi stolpci so funkcijsko odvisni od stolpcev, ki določajo ključ. 
-- 1NF - vsi stolpci skupaj določajo nek ključ
-- Minimalni ključ (ang. candidate key): ključ, za katerega nobena stroga podmnožica ne predstavlja ključa.
-- Primarni ključ: izbrani minimalni ključ
-- Neključni stolpec: stolpec, ki ni v nobenem minimalnem ključu
-- Pogoj za 2NF: 1NF + nobena stroga podmnožica kakega minimalnega ključa ne funkcijsko določa kak neključni stolpec
-```{r echo=FALSE, out.width='49%'}
-knitr::include_graphics(c('viri/2nf_1.png','viri/2nf_2.png') )
-```
-
-## <a href="http://holowczak.com/database-normalization/7/">3NF </a> {.build}
-
-- Pogoj: relacija je v 2NF in nimamo tranzitivnih funkcionalnih odvisnosti.
-- Tranzitivna funkcionalna odvisnost: 
-    - iz `A -> B`, `B -> C` sledi `A -> C`.
-
-```{r echo=FALSE, out.width='49%'}
-knitr::include_graphics(c('viri/3nf_1.png', 'viri/3nf_2.png'))
-```
-
-
-## <a href="http://holowczak.com/database-normalization/8/">BCNF</a> {.build}
-
-- Pogoj: za vsako funkcionalno odvisnost oblike:
-     - `A1, ..., An -> B` velja, 
-     - da stolpci `A1, ..., An` predstavljajo primarni ključ.
-
-## "Statistična" definicija "tidy data" {.build}
-
-- Stolpci lahko predstavljajo spremenljivke ali meritve
-- Spremenljivke opisujejo parametre pri katerih je izvedene meritev ("dimenzije")
-- Definicija "Tidy data"
-    - vsaka spremenljivka tvori stolpec
-    - za vsako meritev imamo eno vrstico
-    - vsak tip meritve je v ločeni tabeli
-- Ekvivalentno: podatki so v 3NF    
-    
 ## Najbolj pogosti problemi {.build}
 
-- Imena stolpcev so vrednosti, ne pa imena spremenljivk
-- V enem stolpcu hranimo več spremenljivk
-- Spremenljivke hranimo tako v vrsticah kot v stolpcih
-- Več vrst meritev (podatkov) v eni tabeli
-- Več istovrstnih meritev v večih tabelah
+- Imena stolpcev so vrednosti, ne pa imena spremenljivk.
+- V enem stolpcu hranimo več spremenljivk.
+- Spremenljivke hranimo tako v vrsticah kot v stolpcih.
+- Več vrst meritev (podatkov) v eni tabeli.
+- Več istovrstnih meritev v večih tabelah.
 - Hadley Wickham, <a href="http://www.jstatsoft.org/article/view/v059i10/v59i10.pdf">Tidy Data</a>, Journal of Statistical Software, August 2014, Volume 59, Issue 10
 
 ## Imena stolpcev so vrednosti {.build}
@@ -490,9 +399,9 @@ knitr::include_graphics('viri/operacija_molt.png')
 ```
 
 
-## Operacija "gather" {.build}
+## Operacija "pivot_longer" {.build}
 - paket ```tidyr```
-
+- alternative `gather (tidyr)`, `melt (reshape2)`
 \small
 ```{r}
 head(airquality)
@@ -500,27 +409,18 @@ head(airquality)
 ```{r echo=FALSE, warning=FALSE, message=FALSE, out.width='50%'}
 require(tidyr)
 ```
+
+## Operacija "pivot_longer" {.build}
+
 ```{r}
-airquality %>% gather(MERITEV, VREDNOST, -Month, -Day) %>% head
+airquality %>% 
+  pivot_longer(
+    c(-Month, -Day), 
+    names_to="MERITEV", 
+    values_to="VREDNOST"
+  ) %>% head
 ```
 
-
-## Alternativa - operacija "melt" {.build}
-
-- paket ```reshape2```
-
-\small
-```{r}
-head(airquality)
-```
-```{r echo=FALSE, warning=FALSE, message=FALSE}
-require(reshape2)
-```
-```{r}
-airquality %>% melt(id.vars = c("Month", "Day"),
-                    variable.names=c("MERITEV"), 
-                    value.name = "VREDNOST")
-```
 
 ## En stolpec več spremenljivk {.build}
 
@@ -545,7 +445,7 @@ knitr::include_graphics('viri/podatki_v_vrsticah_in_stolpcih_2.png')
 knitr::include_graphics('viri/prevec_v_eni_tabeli.png')
 ```
 
-- Normalizacija
+- Vsaka meritev v svoji tabeli (normalizacija).
 ```{r echo=FALSE, out.width='60%'}
 knitr::include_graphics('viri/normalizacija_tabele.png')
 ```
@@ -554,5 +454,5 @@ knitr::include_graphics('viri/normalizacija_tabele.png')
 ## Več istovrstnih meritev v večih tabelah {.build}
 
 - Npr. meritve za vsako leto, po osebah, ...
-- Po potrebi dodamo stolpce, ki odražajo delitev in združimo v eno tabelo
-- Npr. delitev po letih: dodamo stolpec leto
+- Po potrebi dodamo stolpce, ki odražajo delitev in združimo v eno tabelo.
+- Npr. delitev po letih: dodamo stolpec leto.
