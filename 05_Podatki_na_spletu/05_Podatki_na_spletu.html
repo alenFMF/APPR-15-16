@@ -4,7 +4,6 @@
   <title>Podatki na spletu</title>
 
   <meta charset="utf-8">
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta http-equiv="X-UA-Compatible" content="chrome=1">
   <meta name="generator" content="pandoc" />
 
@@ -250,7 +249,6 @@ background: black;
 }
 
 slides > slide {
-display: none;
 font-family: 'Open Sans', Arial, sans-serif;
 font-size: 26px;
 color: #797979;
@@ -271,17 +269,19 @@ transition: all 0.6s ease-in-out;
 }
 
 slides > slide.far-past {
-display: none;
 }
 
 slides > slide.past {
-display: block;
 opacity: 0;
 }
 
 slides > slide.current {
 display: block;
 opacity: 1;
+z-index: 1;
+}
+slides > slide:not(.current) {
+z-index: 0;
 }
 
 slides > slide.current .auto-fadein {
@@ -296,13 +296,11 @@ background-size: 100% 100%;
 }
 
 slides > slide.next {
-display: block;
 opacity: 0;
 pointer-events: none;
 }
 
 slides > slide.far-next {
-display: none;
 }
 
 slides > slide.dark {
@@ -374,8 +372,6 @@ width: 1100px;
 
 slides.layout-widescreen > slide.far-past,
 slides.layout-faux-widescreen > slide.far-past {
-display: block;
-display: none;
 -webkit-transform: translate(-2260px);
 -moz-transform: translate(-2260px);
 -ms-transform: translate(-2260px);
@@ -409,8 +405,6 @@ pointer-events: none;
 
 slides.layout-widescreen > slide.far-next,
 slides.layout-faux-widescreen > slide.far-next {
-display: block;
-display: none;
 -webkit-transform: translate(2260px);
 -moz-transform: translate(2260px);
 -ms-transform: translate(2260px);
@@ -1342,7 +1336,19 @@ opacity: 1;
 .overview .slide-area {
 display: none;
 }
+slides > slide {
+background: linear-gradient(#ffffff, #ffffff 85%, #e6e6e6);
+background-color: white;
+}
+slides > slide {
+opacity: 0;
+}
 @media print {
+
+@page {
+size: landscape;
+margin: 0;
+}
 
 slides slide {
 display: block !important;
@@ -3067,6 +3073,10 @@ if (document.readyState !== "loading" &&
       font-style: italic;
     }
 
+    summary {
+      display: list-item;
+    }
+
     slides > slide {
       -webkit-transition: all 0.4s ease-in-out;
       -moz-transition: all 0.4s ease-in-out;
@@ -3082,6 +3092,10 @@ if (document.readyState !== "loading" &&
       transition: opacity 0.6s ease-in 0.4s;
       opacity: 0;
     }
+/* https://github.com/ropensci/plotly/pull/524#issuecomment-468142578 */
+slide:not(.current) .plotly.html-widget{
+  display: block;
+}
 
   </style>
 
@@ -3096,112 +3110,115 @@ if (document.readyState !== "loading" &&
         <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
     <hgroup class="auto-fadein">
       <h1 data-config-title><!-- populated from slide_config.json --></h1>
-      <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
+      
       <p data-config-presenter><!-- populated from slide_config.json --></p>
           </hgroup>
   </slide>
 
-<slide class=""><hgroup><h2>Pridobivanje podatkov iz spleta</h2></hgroup><article  class="build" id="pridobivanje-podatkov-iz-spleta">
+<slide class=""><hgroup><h2>Pridobivanje podatkov iz spleta</h2></hgroup><article  id="pridobivanje-podatkov-iz-spleta" class="small build">
 
-<ul>
+<ul class = 'build'>
 <li>Na spletu so podatki na voljo kot:
 
-<ul>
+<ul class = 'build'>
 <li>vsebina spletne strani (HTML)</li>
 <li>datoteka za nalaganje (ang. download)</li>
-<li>klici preko aplikacijskega programskega vmesnika (API)
-
-<ul>
-<li>XML</li>
-<li>JSON</li>
-</ul></li>
+<li>klici preko aplikacijskega programskega vmesnika API (XML, JSON)</li>
 </ul></li>
 <li>Spletne strani pregledujemo s spletnim brskalnikom</li>
 <li>Protokol HTTP:
 
-<ul>
+<ul class = 'build'>
 <li>IP naslov ali URL strežnika (193.2.67.103, <a href='http://www.fmf.uni-lj.si' title=''>http://www.fmf.uni-lj.si</a>)</li>
 <li>tekstovni protokol</li>
 <li>zahtevek in odgovor (ang. request, response)</li>
 </ul></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Pregledovanje strani in prometa</h2></hgroup><article  id="pregledovanje-strani-in-prometa">
+
+<ul class = 'build'>
 <li>Pregled prometa, vsebine:
 
-<ul>
+<ul class = 'build'>
 <li>Firbug na Firefoxu (add-on)</li>
 <li>&ldquo;Inspect element&rdquo; na Google Chrome</li>
 </ul></li>
+<li>Primer: knjižnica <code>rvest</code> in Wikipedia.</li>
+<li>Primer: JSON (klic API)</li>
 </ul>
 
-</article></slide><slide class=""><hgroup><h2>Protokol <em>HTTP</em></h2></hgroup><article  class="build" id="protokol-http">
+</article></slide><slide class=""><hgroup><h2>Protokol <em>HTTP</em></h2></hgroup><article  id="protokol-http" class="build">
 
-<ul>
+<ul class = 'build'>
 <li>Tekstovni protokol nad protokolom TCP/IP</li>
 <li>Klient pošlje poizvedbo</li>
 <li>Strežnik odgovori</li>
 <li>V vsakem pogovoru najprej nekdo vpraša (klient), drugi pa odgovori (strežnik)</li>
 <li>Dva računalnika lahko izmenjujeta vlogi</li>
 <li>URL - ang. Uniform Resource Locator - identifikator vira</li>
-<li><a href='http://www.fmf.uni-lj.si:80/pot/do/vira?a=1&amp;b=2' title=''>http://www.fmf.uni-lj.si:80/pot/do/vira?a=1&amp;b=2</a>
+</ul>
 
-<ul>
+</article></slide><slide class=""><hgroup><h2>Protokol <em>HTTP</em></h2></hgroup><article  id="protokol-http-1" class="build">
+
+<ul class = 'build'>
+<li>Primer: <a href='http://www.fmf.uni-lj.si:80/pot/do/vira?a=1&amp;b=2' title=''>http://www.fmf.uni-lj.si:80/pot/do/vira?a=1&amp;b=2</a></li>
 <li>protokol <code>http://</code></li>
 <li>ime strežnika <code>www.fmf.uni-lj.si</code>
 
-<ul>
+<ul class = 'build'>
 <li>vsako ime se preslika v IP številko</li>
 <li>za preslikavo skrbijo DNS strežniki (del TCP/IP omrežja)</li>
 </ul></li>
 <li>lokalna pot do vira na strežniku <code>/pot/do/vira/</code>
 
-<ul>
+<ul class = 'build'>
 <li>lahko je to dejanska pot na disku od neke mape dalje</li>
 <li>lahko je pač samo simbolična pot (ang. route), ki sproži neko funkcijo, ki vrne odgovor</li>
 </ul></li>
 <li>parametri za poizvedbo oblike <code>ključ=vrednost</code>, za znakom <code>&#39;?&#39;</code>, pari so ločeni z znakom <code>&#39;&amp;&#39;</code></li>
-</ul></li>
 </ul>
 
-</article></slide><slide class=""><hgroup><h2>Zahtevek (ang. <em>request</em>)</h2></hgroup><article  class="build" id="zahtevek-ang.-request">
+</article></slide><slide class=""><hgroup><h2>Zahtevek (ang. <em>request</em>)</h2></hgroup><article  id="zahtevek-ang.-request" class="build">
 
-<ul>
-<li>Oblika (tekstovna):
+<ul class = 'build'>
+<li>Oblika (tekstovna):</li>
+<li>Začetna vrstica (ukaz + pot do vira + št. protokola, npr. <code>GET /pot/do/vira/ HTTP/1.0</code>)
 
-<ul>
-<li>začetna vrstica (ukaz + pot do vira + št. protokola, npr. <code>GET /pot/do/vira/ HTTP/1.0</code>)
-
-<ul>
+<ul class = 'build'>
 <li>ukazi: <code>GET</code>, <code>POST</code>, <code>DELETE</code>, …</li>
 </ul></li>
-<li>ena ali več vrstic glave (ang. Header)
+<li>Ena ali več vrstic glave (ang. Header)
 
-<ul>
+<ul class = 'build'>
 <li>vrstice oblike: <code>ključ: vrednost1, vrednost2</code></li>
 <li>ena ali več tekstovnih vrednosti ločenih z vejico</li>
 <li>primer: <code>Last-Modified: Fri, 31 Dec 1999 23:59:59 GMT</code></li>
 </ul></li>
-<li>prazna vrstica</li>
-<li>opcijsko telo zahtevka (poljuben tekst)
+<li>Prazna vrstica</li>
+<li>Opcijsko telo zahtevka (poljuben tekst)
 
-<ul>
+<ul class = 'build'>
 <li>poljuben tekst</li>
-<li>za pravilno interpretacijo imamo v glavi dva ključa:
+<li>za pravilno interpretacijo imamo v glavi dva ključa
 
-<ul>
+<ul class = 'build'>
 <li><code>Content-Type</code> - določa tip vsebine, oz. ang. MIME type (MIME = Multipurpose Internet Mail Extensions)</li>
 <li><code>Content-Length</code> - število bytov v telesu</li>
 <li>Primer uporabe telesa: nalaganje datoteke</li>
 </ul></li>
 </ul></li>
-</ul></li>
 </ul>
 
-</article></slide><slide class=""><hgroup><h2>Kaj pošilja spletni brskalnik?</h2></hgroup><article  class="build" id="kaj-posilja-spletni-brskalnik">
+</article></slide><slide class=""><hgroup><h2>Kaj pošilja spletni brskalnik?</h2></hgroup><article  id="kaj-pošilja-spletni-brskalnik" class="build">
 
-<ul>
+<ul class = 'build'>
 <li>V Chrome vklopimo <code>Inspect element</code>, preklopimo na <code>Network</code></li>
 <li>Vpišemo v naslovno vrstico: <code>http://httpbin.org/get</code></li>
 <li>Ko gremo na neko spletno stran preko naslova, brskalnik vedno uporabi ukaz <code>GET</code>:</li>
 </ul>
+
+
 
 <pre >GET /get HTTP/1.1
 Host: httpbin.org
@@ -3214,15 +3231,15 @@ Accept-Encoding: gzip, deflate, sdch
 Accept-Language: en-US,en;q=0.8
 Cookie: _ga=GA1.2.2024541521.1447802935; _gat=1</pre>
 
-</article></slide><slide class=""><hgroup><h2>Odgovor (ang. <em>response</em>)</h2></hgroup><article  class="build" id="odgovor-ang.-response">
+</article></slide><slide class=""><hgroup><h2>Odgovor (ang. <em>response</em>)</h2></hgroup><article  id="odgovor-ang.-response" class="build">
 
-<ul>
+<ul class = 'build'>
 <li>Oblika (tekstovna) je podobna obliki zahtevka
 
-<ul>
+<ul class = 'build'>
 <li>začetna vrstica (št. protokola + koda odgovora + opis odgovora)
 
-<ul>
+<ul class = 'build'>
 <li>primer: <code>HTTP/1.0 200 OK</code></li>
 </ul></li>
 <li>ena ali več vrstic glave (ang. Header)</li>
@@ -3231,7 +3248,7 @@ Cookie: _ga=GA1.2.2024541521.1447802935; _gat=1</pre>
 </ul></li>
 <li>Kode odgovora:
 
-<ul>
+<ul class = 'build'>
 <li>1xx - vsebina je zgolj informacijska</li>
 <li>2xx - uspešno pridobljena vsebina (npr. <code>200 OK</code>)</li>
 <li>3xx - prevezava (ang. redirect, npr. <code>301 Moved Permanently</code>, <code>302 Moved Temporarily</code>)</li>
@@ -3240,12 +3257,13 @@ Cookie: _ga=GA1.2.2024541521.1447802935; _gat=1</pre>
 </ul></li>
 </ul>
 
-</article></slide><slide class=""><hgroup><h2>Kaj bi pa odgovoril strežnik?</h2></hgroup><article  class="build" id="kaj-bi-pa-odgovoril-streznik">
+</article></slide><slide class=""><hgroup><h2>Kaj bi pa odgovoril strežnik?</h2></hgroup><article  id="kaj-bi-pa-odgovoril-strežnik" class="build">
 
-<ul>
+<ul class = 'build'>
 <li>Na prejšnji zahtevek strežnik odgovori takole</li>
-<li></li>
 </ul>
+
+
 
 <pre >HTTP/1.1 200 OK
 Server: nginx
@@ -3272,9 +3290,11 @@ Access-Control-Allow-Credentials: true
   &quot;url&quot;: &quot;http://httpbin.org/get&quot;
 }</pre>
 
-</article></slide><slide class=""><hgroup><h2>Knjižnica <em>httr</em></h2></hgroup><article  class="build" id="knjiznica-httr">
 
-<ul>
+
+</article></slide><slide class=""><hgroup><h2>Knjižnica <em>httr</em></h2></hgroup><article  id="knjižnica-httr" class="build">
+
+<ul class = 'build'>
 <li>Enostavna knjižnica za uporabo protokola HTTP</li>
 <li>Opis: <a href='https://github.com/hadley/httr/blob/master/vignettes/quickstart.Rmd' title=''>https://github.com/hadley/httr/blob/master/vignettes/quickstart.Rmd</a></li>
 <li></li>
@@ -3286,107 +3306,93 @@ status_code(r)</pre>
 
 <pre >## [1] 200</pre>
 
-<ul>
+<ul class = 'build'>
 <li>Glava:</li>
 </ul>
 
+
+
 <pre class = 'prettyprint lang-r'>headers(r)</pre>
 
-<pre >## $`access-control-allow-credentials`
-## [1] &quot;true&quot;
-## 
-## $`access-control-allow-origin`
-## [1] &quot;*&quot;
-## 
-## $`content-encoding`
-## [1] &quot;gzip&quot;
+<pre >## $date
+## [1] &quot;Thu, 05 Nov 2020 00:32:46 GMT&quot;
 ## 
 ## $`content-type`
 ## [1] &quot;application/json&quot;
 ## 
-## $date
-## [1] &quot;Wed, 13 Nov 2019 09:23:28 GMT&quot;
-## 
-## $`referrer-policy`
-## [1] &quot;no-referrer-when-downgrade&quot;
-## 
-## $server
-## [1] &quot;nginx&quot;
-## 
-## $`x-content-type-options`
-## [1] &quot;nosniff&quot;
-## 
-## $`x-frame-options`
-## [1] &quot;DENY&quot;
-## 
-## $`x-xss-protection`
-## [1] &quot;1; mode=block&quot;
-## 
 ## $`content-length`
-## [1] &quot;218&quot;
+## [1] &quot;366&quot;
 ## 
 ## $connection
 ## [1] &quot;keep-alive&quot;
 ## 
+## $server
+## [1] &quot;gunicorn/19.9.0&quot;
+## 
+## $`access-control-allow-origin`
+## [1] &quot;*&quot;
+## 
+## $`access-control-allow-credentials`
+## [1] &quot;true&quot;
+## 
 ## attr(,&quot;class&quot;)
 ## [1] &quot;insensitive&quot; &quot;list&quot;</pre>
 
-</article></slide><slide class=""><hgroup><h2>Vsebina</h2></hgroup><article  class="build" id="vsebina">
+</article></slide><slide class=""><hgroup><h2>Vsebina</h2></hgroup><article  id="vsebina" class="build">
 
-<ul>
+<ul class = 'build'>
 <li>Za testiranje komunikacije bomo uporabili strežnik <code>http://httpbin.org</code> in vire na njemu</li>
 <li>Niz v JSONU, ki ga vrne vir <code>/get</code> - opis zahtevka</li>
 </ul>
+
+
 
 <pre class = 'prettyprint lang-r'>content(r, &quot;text&quot;)</pre>
 
 <pre >## No encoding supplied: defaulting to UTF-8.</pre>
 
-<pre >## [1] &quot;{\n  \&quot;args\&quot;: {}, \n  \&quot;headers\&quot;: {\n    \&quot;Accept\&quot;: \&quot;application/json, text/xml, application/xml, */*\&quot;, \n    \&quot;Accept-Encoding\&quot;: \&quot;gzip, deflate\&quot;, \n    \&quot;Host\&quot;: \&quot;httpbin.org\&quot;, \n    \&quot;User-Agent\&quot;: \&quot;libcurl/7.54.0 r-curl/3.2 httr/1.3.1\&quot;\n  }, \n  \&quot;origin\&quot;: \&quot;188.230.128.78, 188.230.128.78\&quot;, \n  \&quot;url\&quot;: \&quot;https://httpbin.org/get\&quot;\n}\n&quot;</pre>
+<pre >## [1] &quot;{\n  \&quot;args\&quot;: {}, \n  \&quot;headers\&quot;: {\n    \&quot;Accept\&quot;: \&quot;application/json, text/xml, application/xml, */*\&quot;, \n    \&quot;Accept-Encoding\&quot;: \&quot;deflate, gzip\&quot;, \n    \&quot;Host\&quot;: \&quot;httpbin.org\&quot;, \n    \&quot;User-Agent\&quot;: \&quot;libcurl/7.64.1 r-curl/4.3 httr/1.4.2\&quot;, \n    \&quot;X-Amzn-Trace-Id\&quot;: \&quot;Root=1-5fa3482e-486e0521485e7d2b75b949b8\&quot;\n  }, \n  \&quot;origin\&quot;: \&quot;46.182.229.112\&quot;, \n  \&quot;url\&quot;: \&quot;http://httpbin.org/get\&quot;\n}\n&quot;</pre>
 
 <pre class = 'prettyprint lang-r'>str(content(r))</pre>
 
 <pre >## List of 4
 ##  $ args   : Named list()
-##  $ headers:List of 4
+##  $ headers:List of 5
 ##   ..$ Accept         : chr &quot;application/json, text/xml, application/xml, */*&quot;
-##   ..$ Accept-Encoding: chr &quot;gzip, deflate&quot;
+##   ..$ Accept-Encoding: chr &quot;deflate, gzip&quot;
 ##   ..$ Host           : chr &quot;httpbin.org&quot;
-##   ..$ User-Agent     : chr &quot;libcurl/7.54.0 r-curl/3.2 httr/1.3.1&quot;
-##  $ origin : chr &quot;188.230.128.78, 188.230.128.78&quot;
-##  $ url    : chr &quot;https://httpbin.org/get&quot;</pre>
+##   ..$ User-Agent     : chr &quot;libcurl/7.64.1 r-curl/4.3 httr/1.4.2&quot;
+##   ..$ X-Amzn-Trace-Id: chr &quot;Root=1-5fa3482e-486e0521485e7d2b75b949b8&quot;
+##  $ origin : chr &quot;46.182.229.112&quot;
+##  $ url    : chr &quot;http://httpbin.org/get&quot;</pre>
 
-</article></slide><slide class=""><hgroup><h2>Obravnava vsebine</h2></hgroup><article  class="build" id="obravnava-vsebine">
+</article></slide><slide class=""><hgroup><h2>Obravnava vsebine</h2></hgroup><article  id="obravnava-vsebine" class="build">
 
-<ul>
+<ul class = 'build'>
 <li>Branje tekstovne vsebine v kodni tabeli</li>
-<li></li>
 </ul>
 
 <pre class = 'prettyprint lang-r'>content(r, &quot;text&quot;, encoding = &quot;ISO-8859-1&quot;)</pre>
 
-<ul>
+<ul class = 'build'>
 <li>Detekcija kodne tabele iz besedila (načeloma bi morala kodna tabela biti napisana v glavi)</li>
-<li></li>
 </ul>
 
 <pre class = 'prettyprint lang-r'>stringi::stri_enc_detect(content(r, &quot;raw&quot;)).</pre>
 
-<ul>
+<ul class = 'build'>
 <li>Obravnava binarnih datotek</li>
-<li></li>
 </ul>
 
 <pre class = 'prettyprint lang-r'>bin &lt;- content(r, &quot;raw&quot;)
 writeBin(bin, &quot;datoteka.txt&quot;)</pre>
 
-</article></slide><slide class=""><hgroup><h2>Parametri</h2></hgroup><article  class="build" id="parametri">
+</article></slide><slide class=""><hgroup><h2>Parametri</h2></hgroup><article  id="parametri" class="build">
 
-<ul>
+<ul class = 'build'>
 <li>Parametri so mehanizem za pošiljanje parametrov na vir (podobno kot parametri pri funkcijah)</li>
 <li>Vir na strežniku (lahko) uporabi parametre</li>
 <li>Parametri so zakodirani v nizih</li>
-<li></li>
 </ul>
 
 <pre class = 'prettyprint lang-r'>r &lt;- GET(&quot;http://httpbin.org/get&quot;, 
@@ -3394,13 +3400,13 @@ writeBin(bin, &quot;datoteka.txt&quot;)</pre>
 )
 content(r)$args</pre>
 
-<ul>
+<ul class = 'build'>
 <li>Če so v seznamu vrednosti <code>NULL</code> se ignorirajo</li>
 </ul>
 
-</article></slide><slide class=""><hgroup><h2>&ldquo;Kukiji&rdquo; (ang. Cookies)</h2></hgroup><article  class="build" id="kukiji-ang.-cookies">
+</article></slide><slide class=""><hgroup><h2>&ldquo;Kukiji&rdquo; (ang. Cookies)</h2></hgroup><article  id="kukiji-ang.-cookies" class="build">
 
-<ul>
+<ul class = 'build'>
 <li>Mehanizem, ki ga uporabljajo brskalniki in strežniki za komunikacijo stanja</li>
 <li>Slovar vrednosti (ključ=vrednost)</li>
 <li>Strežnik poda slovar v glavi odgovora pod ključem <code>Set-Cookie:</code></li>
@@ -3408,7 +3414,7 @@ content(r)$args</pre>
 <li>Vsakič ko strežniku pošilja zahtevek, priloži slovar v glavi pod ključem <code>Cookie:</code></li>
 <li>Vrednosti v slovarju so lahko neberljive (dešifrira jih lahko le strežnik)
 
-<ul>
+<ul class = 'build'>
 <li>številka seje</li>
 <li>zašifrirani podatki, ki jih razume samo strežnik</li>
 <li>avtentifikacijski žetoni (ang. token)</li>
@@ -3416,33 +3422,48 @@ content(r)$args</pre>
 <li>Kukiji imajo lahko rok trajanja (brskalnik pretečene kukije ne pošilja v zahtevkih)</li>
 </ul>
 
-</article></slide><slide class=""><hgroup><h2>Kukiji in ključi v glavi</h2></hgroup><article  class="build" id="kukiji-in-kljuci-v-glavi">
+</article></slide><slide class=""><hgroup><h2>Kukiji in ključi v glavi</h2></hgroup><article  id="kukiji-in-ključi-v-glavi" class="build">
 
-<ul>
+<ul class = 'build'>
 <li>Primer uporabe na testnem strežniku <a href='http://httpbin.org' title=''>http://httpbin.org</a></li>
 </ul>
 
 <pre class = 'prettyprint lang-r'>r &lt;- GET(&quot;http://httpbin.org/cookies/set&quot;, query = list(a = 5))
 cookies(r)</pre>
 
-<ul>
+<ul class = 'build'>
 <li>Na viru je funkcija, ki prebere parametre in vrne odgovor, kjer zahteva od brskalnika nastavitev vrednosti v cookie za ta URL strežnika</li>
 <li>Če večkrat zaženemo zgornjo kodo z različnimi parametri vidimo, da se vrednosti hranijo med zahtevki</li>
-<li>Nastavljanje ključev v glavi</li>
-<li></li>
 </ul>
 
-<pre class = 'prettyprint lang-r'>r &lt;- GET(&quot;http://httpbin.org/get&quot;, add_headers(Name = &quot;Hadley&quot;))
+</article></slide><slide class=""><hgroup><h2>Kukiji in ključi v glavi</h2></hgroup><article  id="kukiji-in-ključi-v-glavi-1" class="build">
+
+<ul class = 'build'>
+<li>Nastavljanje ključev v glavi</li>
+</ul>
+
+
+
+<pre class = 'prettyprint lang-r'>r &lt;- GET(&quot;http://httpbin.org/get&quot;, 
+    add_headers(Name = &quot;Hadley&quot;))
 str(content(r)$headers)</pre>
 
-</article></slide><slide class=""><hgroup><h2>POST</h2></hgroup><article  class="build" id="post">
+<pre >## List of 6
+##  $ Accept         : chr &quot;application/json, text/xml, application/xml, */*&quot;
+##  $ Accept-Encoding: chr &quot;deflate, gzip&quot;
+##  $ Host           : chr &quot;httpbin.org&quot;
+##  $ Name           : chr &quot;Hadley&quot;
+##  $ User-Agent     : chr &quot;libcurl/7.64.1 r-curl/4.3 httr/1.4.2&quot;
+##  $ X-Amzn-Trace-Id: chr &quot;Root=1-5fa3482e-42188d13161e2d247cb38cac&quot;</pre>
 
-<ul>
+</article></slide><slide class=""><hgroup><h2>POST</h2></hgroup><article  id="post" class="build">
+
+<ul class = 'build'>
 <li>ukaz <em>POST</em> se tipično uporablja, ko pošiljamo vsebino in pričakujemo, da bo vir z njo nekaj naredil</li>
 <li>Obnašanje je podobno kot pri klicu funkcije</li>
 <li>Primeri uporabe
 
-<ul>
+<ul class = 'build'>
 <li>forme v HTML</li>
 <li>nalaganje datotek</li>
 <li>API vmesniki, ki rabijo zahtevnejšo vsebino (XML, JSON)</li>
@@ -3451,48 +3472,40 @@ str(content(r)$headers)</pre>
 
 </article></slide><slide class=""><hgroup><h2>POST</h2></hgroup><article  id="post-1">
 
-<ul>
-<li></li>
-</ul>
-
 <pre class = 'prettyprint lang-r'>url &lt;- &quot;http://httpbin.org/post&quot;
 body &lt;- list(a = 1, b = 2, c = 3)</pre>
 
-<ul>
+<ul class = 'build'>
 <li>Kodiranje slovarja v obliki HTML forme</li>
-<li></li>
 </ul>
 
 <pre class = 'prettyprint lang-r'>r &lt;- POST(url, body = body, encode = &quot;form&quot;)</pre>
 
-<ul>
-<li><a href="https://en.wikipedia.org/wiki/MIME#Multipart_messages">Večdelno sporočilo</a></li>
-<li></li>
+<ul class = 'build'>
+<li>Večdelno sporočilo: <a href='https://en.wikipedia.org/wiki/MIME#Multipart_messages' title=''>https://en.wikipedia.org/wiki/MIME#Multipart_messages</a></li>
 </ul>
 
 <pre class = 'prettyprint lang-r'>r &lt;- POST(url, body = body, encode = &quot;multipart&quot;)</pre>
 
-<ul>
+<ul class = 'build'>
 <li>Parametri v telesu v obliki JSON-a</li>
-<li></li>
 </ul>
 
 <pre class = 'prettyprint lang-r'>r &lt;- POST(url, body = body, encode = &quot;json&quot;)</pre>
 
-<ul>
+<ul class = 'build'>
 <li>Pregled zahtevka</li>
-<li></li>
 </ul>
 
 <pre class = 'prettyprint lang-r'>POST(url, body = body, encode = &quot;form&quot;, verbose())</pre>
 
-</article></slide><slide class=""><hgroup><h2>Format XML</h2></hgroup><article  class="build" id="format-xml">
+</article></slide><slide class=""><hgroup><h2>Format XML</h2></hgroup><article  id="format-xml" class="build">
 
-<ul>
+<ul class = 'build'>
 <li>XML - ang. Extensible Markup Language</li>
 <li>Podoben kot HTML, le strožjo pogoji za sintakso
 
-<ul>
+<ul class = 'build'>
 <li>značke alfanumerične</li>
 <li>vse značke se zapirajo (<code>&lt;a&gt; ... &lt;/a&gt;</code>, <code>&lt;br/&gt;</code>)</li>
 <li>značke pravilo vgnezdene</li>
@@ -3504,56 +3517,57 @@ body &lt;- list(a = 1, b = 2, c = 3)</pre>
 </ul></li>
 </ul>
 
-</article></slide><slide class=""><hgroup><h2>Primer</h2></hgroup><article  class="build" id="primer">
+</article></slide><slide class=""><hgroup><h2>Primer</h2></hgroup><article  id="primer" class="build">
 
-<ul>
+<ul class = 'build'>
 <li><a href='http://www.w3schools.com/xml/note.xml' title=''>http://www.w3schools.com/xml/note.xml</a></li>
-<li></li>
 </ul>
 
 <pre class = 'prettyprint lang-xml'>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;note&gt;
-  &lt;to&gt;Tove&lt;/to&gt;
+    &lt;to&gt;Tove&lt;/to&gt;
     &lt;from&gt;Jani&lt;/from&gt;
     &lt;heading&gt;Reminder&lt;/heading&gt;
     &lt;body&gt;Don&#39;t forget me this weekend!&lt;/body&gt;
 &lt;/note&gt;</pre>
 
-</article></slide><slide class=""><hgroup><h2>Prednosti formata</h2></hgroup><article  class="build" id="prednosti-formata">
+</article></slide><slide class=""><hgroup><h2>Prednosti formata</h2></hgroup><article  id="prednosti-formata" class="build">
 
-<ul>
+<ul class = 'build'>
 <li>Posplošeni bralniki (razčlenjevalniki)
 
-<ul>
+<ul class = 'build'>
 <li>DOM Parser - prebere celo drevo, po katerem lahko brskamo</li>
 <li>SAX - zaporedni razčlenejevalnik (sprožanje dogodkov)</li>
 </ul></li>
 <li>Možnost formalne definicije sintakse
 
-<ul>
+<ul class = 'build'>
 <li>sheme: DTD, XSD shema</li>
 <li>avtomatično preverjanje pravilnosti sintakse in gnezdenja značk</li>
 </ul></li>
 <li>Enolična struktura
 
-<ul>
+<ul class = 'build'>
 <li>jezik za poizvedbe: XPATH</li>
 </ul></li>
 <li>Slabost: predolg, a lahko kompresiramo (zip)</li>
 <li>Npr. Wordove datoteke <code>.xlsx</code> so zazipane XML datoteke</li>
 </ul>
 
-</article></slide><slide class=""><hgroup><h2>JSON</h2></hgroup><article  class="build" id="json">
+</article></slide><slide class=""><hgroup><h2>JSON</h2></hgroup><article  id="json" class="build">
 
-<ul>
+<ul class = 'build'>
 <li>Izgleda kot struktura iz vgnezdenih slovarjev in seznamov v Pyhtonu</li>
 <li>Odgovor na XML, ki je tipično predolg
 
-<ul>
+<ul class = 'build'>
 <li>Še bolj ekstremen format: Apache AVRO ()</li>
 </ul></li>
 <li>Primer: odgovor vira: <a href='http://httpbin.org/get' title=''>http://httpbin.org/get</a></li>
 </ul>
+
+
 
 <pre >{
   &quot;args&quot;: {}, 
@@ -3569,22 +3583,22 @@ body &lt;- list(a = 1, b = 2, c = 3)</pre>
   &quot;url&quot;: &quot;http://httpbin.org/get&quot;
 }</pre>
 
-</article></slide><slide class=""><hgroup><h2>XPATH</h2></hgroup><article  class="build" id="xpath">
+</article></slide><slide class=""><hgroup><h2>XPATH</h2></hgroup><article  id="xpath" class="build">
 
-<ul>
+<ul class = 'build'>
 <li>Jezik za poizvedbe po XML dokumentu (DOM drevesu)</li>
 <li>DOM - Document object model
 
-<ul>
+<ul class = 'build'>
 <li>značke so vozlišča drevesa (node)</li>
 <li>parametri so atributi vozlišč</li>
 <li>besedila med značkami so tekstovna vozlišča (listi drevesa)</li>
 </ul></li>
 </ul>
 
-</article></slide><slide class=""><hgroup><h2>Primer</h2></hgroup><article  class="build" id="primer-1">
+</article></slide><slide class=""><hgroup><h2>Primer</h2></hgroup><article  id="primer-1" class="build">
 
-<ul>
+<ul class = 'build'>
 <li>Oglejmo si spletno stran: <a href='http://www.fmf.uni-lj.si/si/iskanje?q=.&amp;cmd=+I%C5%A1%C4%8Di+&amp;m=any&amp;wm=beg' title=''>http://www.fmf.uni-lj.si/si/iskanje?q=.&amp;cmd=+I%C5%A1%C4%8Di+&amp;m=any&amp;wm=beg</a></li>
 </ul></article></slide>
 

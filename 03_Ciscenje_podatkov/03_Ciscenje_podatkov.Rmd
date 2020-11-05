@@ -1,10 +1,10 @@
 ---
 title: "Čiščenje podatkov"
 output:
-  beamer_presentation:
-    incremental: no
   ioslides_presentation:
     incremental: yes
+  beamer_presentation:
+    incremental: no
 framework: io2012
 ---
 

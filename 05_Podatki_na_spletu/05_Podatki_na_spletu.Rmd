@@ -9,7 +9,7 @@ framework: io2012
 ---
 
 
-## Pridobivanje podatkov iz spleta {.build}
+## Pridobivanje podatkov iz spleta {.small .build}
 
 - Na spletu so podatki na voljo kot:
     - vsebina spletne strani (HTML)
@@ -20,9 +20,14 @@ framework: io2012
     - IP naslov ali URL strežnika (193.2.67.103, http://www.fmf.uni-lj.si)
     - tekstovni protokol
     - zahtevek in odgovor (ang. request, response)
+    
+## Pregledovanje strani in prometa
+
 - Pregled prometa, vsebine:
     - Firbug na Firefoxu (add-on)
     - "Inspect element" na Google Chrome
+- Primer: knjižnica `rvest` in Wikipedia.
+- Primer: JSON (klic API)
 
 ## Protokol *HTTP* {.build}
 
@@ -277,7 +282,7 @@ POST(url, body = body, encode = "form", verbose())
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <note>
-  <to>Tove</to>
+    <to>Tove</to>
 	<from>Jani</from>
 	<heading>Reminder</heading>
 	<body>Don't forget me this weekend!</body>
