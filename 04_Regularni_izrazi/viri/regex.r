@@ -250,7 +250,7 @@ imena %>% View
 id <- stran %>% 
   html_nodes(xpath = "//table[@class='directory-list']//td[not(@class)]//b//a/@href") %>% 
   html_text() %>% 
-  str_extract("(\\d+)") %>% 
+  str_extract("\\d+") %>% 
   as.integer()
 
 id %>% View
@@ -259,7 +259,7 @@ id %>% View
 email <- stran %>% 
   html_nodes(xpath = "//table[@class='directory-list']//td[not(@class)]") %>% 
   sapply(toString) %>% 
-  str_match("mailto:([^\\\"]+)") %>% 
+  str_match("mailto:([^\\\"]+)") %>%  
   .[,2]
 
 email %>% View
@@ -278,20 +278,19 @@ cudniEmaili <- . %>%
 
 email %>% cudniEmaili
 
-emailCist <- email %>%
-  str_replace("sergio.cabello%20", "sergio.cabello@fmf.uni-lj.si") %>%
+emailCist <- email %>% 
+  str_replace("sergio.cabello%20", "sergio.cabello@fmf.uni-lj.si") %>% 
   str_replace("%5B%5Bat%5D%5D", "@") %>%
   str_replace("%20at%20", "@") %>% 
-  str_replace("%20\\(atat\\)%20", "@")
+  str_replace("%20\\(atat\\)%20", "@") 
 
 ## Pridobitev telefonskih številk
 telefonske <- stran %>% 
   html_nodes(xpath = "//table[@class='directory-list']//td[not(@class)]") %>% 
   sapply(toString) %>% 
-  str_match("(\\+386[^<\\,]+)[<\\,]") %>% 
-  .[,2] %>% 
-  str_replace("(0)", "0") %>%
-  str_replace("(ne deluje)", "") %>%
+  str_extract("\\+386[\\d\\(\\) ]+") %>% 
+  str_replace("\\(0\\)", "0") %>% 
+  str_replace("\\(", "") %>%
   str_trim() %>% 
   str_replace("^\\+386 1 4766$", NA_character_)
 
@@ -311,7 +310,8 @@ soba <- stran %>%
   html_nodes(xpath = "//table[@class='directory-list']//td[not(@class)]") %>% 
   sapply(toString) %>% 
   str_match("Soba:([^<]+)") %>% 
-  .[,2]
+  .[,2] %>% 
+  str_trim()
 
 soba %>% View
 
