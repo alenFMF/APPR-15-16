@@ -7,6 +7,7 @@
 ### Hierarhično razvrščanje
 - [Opis](http://en.wikipedia.org/wiki/Hierarchical_clustering) 
 - [Interaktivna aplikacija](https://joyofdata.shinyapps.io/hclust-shiny/), [koda](https://github.com/joyofdata/hclust-shiny)
+- https://uc-r.github.io/hc_clustering
 
 ### Razvrščanje s pomočjo metode voditeljev
 - [Opis](https://en.wikipedia.org/wiki/K-means_clustering)

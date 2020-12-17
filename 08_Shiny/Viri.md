@@ -1,1 +1,2 @@
 - https://shiny.rstudio.com/tutorial/
+- https://github.com/rstudio/shiny-examples
