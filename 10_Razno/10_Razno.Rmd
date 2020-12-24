@@ -1,0 +1,46 @@
+---
+title: "Časovna zahtevnost"
+output: 
+  ioslides_presentation:
+    incremental: yes
+---
+
+## Merjenje hitrosti na računalniku
+
+- Novejši in hitrejši računalniki delajo hitreje.
+- Neko delo se lahko opravi hitreje, če je dobro organizirano.
+- Računalniki lahko delajo počasi, ker jim primanjkuje spomina.
+
+## Kako deluje računalnik?
+
+- Računalnik izvaja operacije na zlogih (bytih).
+- Zloge iz spomina (RAM) prestavlja v procesor (registri).
+- V registrih opravi računske operacije.
+- Zloge shrani nazaj v spomin.
+- Program je opisan z osnovnimi ukazi v spominu.
+- https://schweigi.github.io/assembler-simulator/
+
+## Hitrost računalnika
+
+- Procesor deluje po taktu (korak), ključni podatek je frekvenca (nekaj GHz).
+- Procesorji imajo več jeder (vzporedno izvajanje).
+- Hierarhija pomnilnikov glede na hitrost/ceno: Cache -> RAM -> SSD -> HDD.
+- Več hitrejšega pomnilnika imamo, hitreje nam računalnik deluje.
+- Če podatki večji od velikosti RAM, obdelava zelo počasna.
+
+## Učinkovitost algoritmov
+
+- Elementarne aritmetične in logične operacije se izvedejo v enem koraku.
+- V "korak" vključujemo tudi branje in pisanje spremenljivk.
+- Štejemo število korakov algoritmov v odvisnosti od velikosti vhodnih podatkov ($n$).
+- Opazujemo asimptotsko obnašanje algoritma če gre $n$ proti velikim številom.
+- $f: \mathbb{N} \to \mathbb{N}$ - funkcija, ki šteje število korakov algoritma v odvisnosti od od velikosti vhodnih podatkov.
+- $f(n) = O(g(n))$, če obstajata $n_0 > 0$ in konstanta $C > 0$, da velja $f(n) \leq Cg(n)$ za vsak $n \geq n_0$. 
+- $O(n)$ - **časovna zahtevnost** je od nekje naprej omejena z neko linearno funkcijo.
+
+## Primeri
+
+- Generiranje naključnih števil - $O(n)$.
+- Učinkovito urejanje $O(n\log n)$.
+- Urejanje z izbiranjem $O(n^2)$.
+

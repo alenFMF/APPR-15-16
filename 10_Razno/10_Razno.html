@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Modeliranje</title>
+  <title>Časovna zahtevnost</title>
 
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="chrome=1">
@@ -19,7 +19,7 @@
     var SLIDE_CONFIG = {
       // Slide settings
       settings: {
-                title: 'Modeliranje',
+                title: 'Časovna zahtevnost',
                         useBuilds: true,
         usePrettify: true,
         enableSlideAreas: true,
@@ -3115,189 +3115,53 @@ slide:not(.current) .plotly.html-widget{
           </hgroup>
   </slide>
 
-<slide class=""><hgroup><h2>Modeliranje</h2></hgroup><article  id="modeliranje">
+<slide class=""><hgroup><h2>Merjenje hitrosti na računalniku</h2></hgroup><article  id="merjenje-hitrosti-na-računalniku">
 
 <ul class = 'build'>
-<li>Opisovanje odvisnosti podatkov.</li>
-<li>Statistični model - matematični model, ki ob nekih predpostavkah opisuje neke podatke (vzorec).</li>
-<li>Modele lahko tudi &ldquo;učimo&rdquo; - strojno učenje:
-
-<ul class = 'build'>
-<li>nadzorovano učenje (npr. linearna regresija),</li>
-<li>nenadzorovano učenje (npr. razvrščanje),</li>
-<li>vzpodbujevalno učenje.</li>
-</ul></li>
-<li>Ogledali si bomo osnovne primere prvih dveh.</li>
+<li>Novejši in hitrejši računalniki delajo hitreje.</li>
+<li>Neko delo se lahko opravi hitreje, če je dobro organizirano.</li>
+<li>Računalniki lahko delajo počasi, ker jim primanjkuje spomina.</li>
 </ul>
 
-</article></slide><slide class=""><hgroup><h2>Razvrščanje</h2></hgroup><article  id="razvrščanje">
+</article></slide><slide class=""><hgroup><h2>Kako deluje računalnik?</h2></hgroup><article  id="kako-deluje-računalnik">
 
 <ul class = 'build'>
-<li>\(U\) - množica vseh enot podatkov</li>
-<li>\(C_i \subseteq U\) - skupina enot</li>
-<li>\(R = \{C_i\}_{i=1}^{k}\) - razvrstitev</li>
-<li>\(\Phi\) - množica dopustnih razvrstitev</li>
-<li>\(P: \Phi \mapsto \mathbb{R}_{0}^{+}\) - kriterijska funkcija</li>
-<li>\(R\) je <strong>razbitje</strong>, če velja:
-
-<ul class = 'build'>
-<li>\(\bigcup_{i=1}^{k} C_i = U\),</li>
-<li>\(i \neq j \rightarrow C_i \cap C_j = \emptyset\).</li>
-</ul></li>
+<li>Računalnik izvaja operacije na zlogih (bytih).</li>
+<li>Zloge iz spomina (RAM) prestavlja v procesor (registri).</li>
+<li>V registrih opravi računske operacije.</li>
+<li>Zloge shrani nazaj v spomin.</li>
+<li>Program je opisan z osnovnimi ukazi v spominu.</li>
+<li><a href='https://schweigi.github.io/assembler-simulator/' title=''>https://schweigi.github.io/assembler-simulator/</a></li>
 </ul>
 
-</article></slide><slide class=""><hgroup><h2>Mera različnosti</h2></hgroup><article  id="mera-različnosti">
+</article></slide><slide class=""><hgroup><h2>Hitrost računalnika</h2></hgroup><article  id="hitrost-računalnika">
 
 <ul class = 'build'>
-<li>Funkcija \(d(x, y): U \times U \to \mathbb{R}\) je <strong>mera različnosti</strong>, če za vse \(x, y \in U\) velja:
-
-<ul class = 'build'>
-<li><strong>nenegativnost</strong>: \(d(x, y) \geq 0\) ,</li>
-<li><strong>refleksivnost</strong>: \(d(x, x) = 0\) in<br/></li>
-<li><strong>simetričnost</strong>: \(d(x, y) = d(y, x)\).</li>
-</ul></li>
-<li>Mera lahko ustreza še dodatnim pogojem (potem je <strong>razdalja</strong>):
-
-<ul class = 'build'>
-<li><strong>razločljivost</strong>: \(d(x, y) = 0 \Rightarrow x = y\),</li>
-<li><strong>trikotniška neenakost</strong>: za vsak \(z \in U\) velja \(d(x,y) \leq d(x,z) + d(z, y)\)</li>
-</ul></li>
+<li>Procesor deluje po taktu (korak), ključni podatek je frekvenca (nekaj GHz).</li>
+<li>Procesorji imajo več jeder (vzporedno izvajanje).</li>
+<li>Hierarhija pomnilnikov glede na hitrost/ceno: Cache -&gt; RAM -&gt; SSD -&gt; HDD.</li>
+<li>Več hitrejšega pomnilnika imamo, hitreje nam računalnik deluje.</li>
+<li>Če podatki večji od velikosti RAM, obdelava zelo počasna.</li>
 </ul>
 
-</article></slide><slide class=""><hgroup><h2>Primeri različnosti</h2></hgroup><article  id="primeri-različnosti">
+</article></slide><slide class=""><hgroup><h2>Učinkovitost algoritmov</h2></hgroup><article  id="učinkovitost-algoritmov">
 
 <ul class = 'build'>
-<li>Podatkovni enoti: \(x=(x_1, \ldots, x_m)\), \(y = (y_1, \ldots, y_m)\).</li>
-<li>Evklidska razdalja: \(d(x, y) = \sqrt{\sum_{i=1}^{m}(x_i - y_i)^2}\).</li>
-<li>Razdalje Minkowskega: \(d(x, y) = \left(\sum_{i=1}^{m}\vert x_i - y_i\vert^r\right)^{\frac{1}{r}}\), \(r &gt; 0\).</li>
-<li>Manhattanska razdalja, pri \(r = 1\).</li>
-<li>Trdnjavska razdalja: \(d(x, y) = \max_{i=1, \ldots, n}\vert x_i - y_i\vert\).</li>
+<li>Elementarne aritmetične in logične operacije se izvedejo v enem koraku.</li>
+<li>V &ldquo;korak&rdquo; vključujemo tudi branje in pisanje spremenljivk.</li>
+<li>Štejemo število korakov algoritmov v odvisnosti od velikosti vhodnih podatkov (\(n\)).</li>
+<li>Opazujemo asimptotsko obnašanje algoritma če gre \(n\) proti velikim številom.</li>
+<li>\(f: \mathbb{N} \to \mathbb{N}\) - funkcija, ki šteje število korakov algoritma v odvisnosti od od velikosti vhodnih podatkov.</li>
+<li>\(f(n) = O(g(n))\), če obstajata \(n_0 &gt; 0\) in konstanta \(C &gt; 0\), da velja \(f(n) \leq Cg(n)\) za vsak \(n \geq n_0\).</li>
+<li>\(O(n)\) - <strong>časovna zahtevnost</strong> je od nekje naprej omejena z neko linearno funkcijo.</li>
 </ul>
 
-</article></slide><slide class=""><hgroup><h2>Razpršenost podatkov</h2></hgroup><article  id="razpršenost-podatkov">
+</article></slide><slide class=""><hgroup><h2>Primeri</h2></hgroup><article  id="primeri">
 
 <ul class = 'build'>
-<li>Primer: \(x=(x_1, x_2)\), \(x_1 \in [1000000, 10000000]\), \(x_2 \in [0, 0.1]\)
-
-<ul class = 'build'>
-<li>Vpliv \(x_2\) je zanemarljiv pri izračunu omenjenih različnosti.</li>
-</ul></li>
-<li>Primer: \(x=(x_1, x_2)\), \(x_1 \in [1000000, 1000001]\), \(x_2 \in [0, 1]\)
-
-<ul class = 'build'>
-<li>razpršitev (razpon) podatkov je za obe komponenti enaka 1</li>
-<li>vpliv enakega &ldquo;premika&rdquo; \(x_2\) v območju vrednosti je zanemarljiv.</li>
-</ul></li>
-<li>Kako postaviti dimenzije podatkov v enakopraven položaj glede izračuna različnosti?</li>
-<li>Želimo enakopravnost tako glede prispevka same vrednosti kot tudi primerljivosti relativnega premika znotraj območij vrednosti.</li>
-</ul>
-
-</article></slide><slide class=""><hgroup><h2>Standardizacija</h2></hgroup><article  id="standardizacija">
-
-<ul class = 'build'>
-<li>Izenačenje skal podatkov.</li>
-<li>Najpogostejši način standardizacije.</li>
-<li>\(n\) - število podatkovnih enot, \(m\) - število dimenzij.</li>
-<li>\(x^j = (x_1^j, \ldots, x_m^j)\), \(j = 1, ..., n\) - podatkovne enote (vrstice).</li>
-<li>\(\mu_i = \frac{\sum_{j=1}^n x_i^j}{n}\) - povprečje za komponento/dimenzijo \(i\).</li>
-<li>\(\sigma_i = \sqrt{\frac{\sum_{j=1}^n(x_i^j - \mu_i)^2}{n}}\) - standardni odklon (mera razpršenosti).</li>
-<li>Podatke \(x^j\) preslikamo v \(z^j = (z_1^j, \ldots, z_m^j)\), da velja \(z_i^j = \frac{x_i^j - \mu_i}{\sigma_i}\).</li>
-<li>Dobimo spremenjivke, ki imajo povprečje 0 in so na podoben način razpršene okoli 0 (standardni odklon je 1).</li>
-</ul>
-
-</article></slide><slide class=""><hgroup><h2>Kriterijska funkcija</h2></hgroup><article  id="kriterijska-funkcija">
-
-<ul class = 'build'>
-<li>Iščemo &ldquo;optimalno&rdquo; razbitje za kriterijsko funkcijo \(f\) (minimum)</li>
-<li>Primer: Wardova kriterijska funkcija
-
-<ul class = 'build'>
-<li>\(f(R) = \sum_{C_i \in R}\sum_{x \in C_i}d(x, c(C_i))\),</li>
-<li>\(d\) - kvadrat evklidske razdalje,</li>
-<li>\(c(C_i)\) je <em>centroid</em> \(C_i\)- povprečna točka skupine, \(c(C_i) = \frac{\sum_{x \in C_i}x}{\vert C_i\vert}\).</li>
-<li><a href='http://en.wikipedia.org/wiki/Hierarchical_clustering' title=''>http://en.wikipedia.org/wiki/Hierarchical_clustering</a></li>
-</ul></li>
-</ul>
-
-</article></slide><slide class=""><hgroup><h2>Posplošitev različnosti na skupine</h2></hgroup><article  id="posplošitev-različnosti-na-skupine">
-
-<ul class = 'build'>
-<li>Za dano različnost \(d(x, y)\) želimo to posplošiti na \(d(C_i, C_j)\), kjer sta \(C_i\) in \(C_j\) disjunktni množici podatkov.</li>
-<li>Želimo \(d(x, C_j) = d(\{x\}, C_j)\).</li>
-<li>Nekatere možnosti posplošitve:
-
-<ul class = 'build'>
-<li>\(d(C_i, C_j) = d(c(C_i), c(C_j))\)</li>
-<li>\(d(C_i, C_j) = \max \{d(x, y) | x \in C_i, y \in C_j\}\)<br/></li>
-<li>\(d(C_i, C_j) = \min \{d(x, y) | x \in C_i, y \in C_j\}\)<br/></li>
-<li>…</li>
-</ul></li>
-<li>S takšnimi posplošitvami lahko pridelamo različne kriterijske funkcije.</li>
-</ul>
-
-</article></slide><slide class=""><hgroup><h2>Problem razvrščanja</h2></hgroup><article  id="problem-razvrščanja">
-
-<ul class = 'build'>
-<li>V splošnem imamo pač neko kriterijsko funkcijo na razbitjih.</li>
-<li>Izkaže se, da je iskanje optimuma v večini zanimivih primerov kriterijskih funkcij zelo težek računski problem (NP težek).</li>
-<li>Torej, ni znan bistveno boljši algoritem, kot da preverimo vse možnosti.</li>
-<li>Zato uporabljamo približne algoritme (hevristike).</li>
-</ul>
-
-</article></slide><slide class=""><hgroup><h2>Hierarhično razvrščanje</h2></hgroup><article  id="hierarhično-razvrščanje">
-
-<ul class = 'build'>
-<li>Množica podatkovnih enot: \(x^j\), \(j = 1, \ldots, n\).</li>
-<li>Na začetku je vsaka podatkovna enota v svoji skupini \(C_j^0 = \{x^j\}\), imamo \(n\) skupin, torej razbitje \(R^0 = \{ C_j^0\}_{j=1}^n\).</li>
-<li>Na vsakem koraku poiščemo najbližji množici v razbitju in ju združimo; tako dobimo razbitje z eno množico manj; končamo, ko združimo vse podatkovne enote.</li>
-<li>Za vsak korak \(k\) od \(1\) do \(n-1\)
-
-<ul class = 'build'>
-<li>\(C_1^k\) postane unija najbližjih množic v razbitju \(R^{k-1}\)</li>
-<li>ostale množice preimenujemo v \(C_2^k, \ldots, C_{n - k}^k\),</li>
-<li>\(R^k := \{C_1^k, \ldots, C_{n-k}^k\}\).</li>
-</ul></li>
-<li>Primeri in uporabe.
-
-<ul class = 'build'>
-<li><a href='https://joyofdata.shinyapps.io/hclust-shiny/' title=''>https://joyofdata.shinyapps.io/hclust-shiny/</a></li>
-</ul></li>
-</ul>
-
-</article></slide><slide class=""><hgroup><h2>Metoda voditeljev</h2></hgroup><article  id="metoda-voditeljev">
-
-<ul class = 'build'>
-<li>Izberemo število voditeljev \(k\). Toliko bo na koncu skupin.</li>
-<li>Naključno izberemo <em>voditelje</em> elemente množice \(U\) (ni nujno, da gre za podatkovne enote).</li>
-<li>Ponavljamo:
-
-<ul class = 'build'>
-<li>določimo razvrstitev podatkovnih enot tako, da jih priredimo v skupino k najbližjemu voditelju</li>
-<li>za nove skupine izračunamo centroide in ti postanejo novi voditelji</li>
-</ul></li>
-<li>Postopek ponavljamo dokler se skupine ne ustalijo.</li>
-<li>Primeri in aplikacije</li>
-<li><a href='https://shiny.rstudio.com/gallery/kmeans-example.html' title=''>https://shiny.rstudio.com/gallery/kmeans-example.html</a></li>
-</ul>
-
-</article></slide><slide class=""><hgroup><h2>Linearna regresija</h2></hgroup><article  id="linearna-regresija">
-
-<ul class = 'build'>
-<li>Primer nadzorovanega učenja.</li>
-<li>Dan imamo nabor parov \((x_i, y_i)\), \(x_i, y_i \in \mathbb{R}\), \(i = 1, \ldots, n\).</li>
-<li>Ti predstavljajo meritve nekega pojava, kjer je \(x_i\) dimenzija meritve, \(y_i\) pa sama meritev.</li>
-<li>Primer: \(x_i\) je neka hitrost avtomobila, \(y_i\) pa meritev, kako dolga je bila zavorna pot (primer je zbirka <code>cars</code> v R).</li>
-<li>Želimo določiti funkcijo \(f: \mathbb{R} \to \mathbb{R}\), ki za dan \(x\) vrne &ldquo;kaj naj bi bil \(y\)&rdquo;.</li>
-</ul>
-
-</article></slide><slide class=""><hgroup><h2>Linearna regresija</h2></hgroup><article  id="linearna-regresija-1">
-
-<ul class = 'build'>
-<li>Kakšno funkcijo?</li>
-<li>Če želimo linearno, je z več kot dvemi točkami sistem predoločen.</li>
-<li>Poiščemo &ldquo;najbolj&rdquo; primerno premico.</li>
-<li>Metoda najmanjših kvadratov.</li>
-<li><a href='https://gallery.shinyapps.io/slr_diag/' title=''>https://gallery.shinyapps.io/slr_diag/</a></li>
+<li>Generiranje naključnih števil - \(O(n)\).</li>
+<li>Učinkovito urejanje \(O(n\log n)\).</li>
+<li>Urejanje z izbiranjem \(O(n^2)\).</li>
 </ul></article></slide>
 
 

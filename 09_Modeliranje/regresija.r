@@ -37,8 +37,8 @@ ggplot(cars, aes(x = speed, y = dist)) +
 
 # primer predikcije. Kakšna je hitrost na razdaljah 15, 20
 newSpeed <- data.frame(speed=c(15, 20))
-predict(fit, newSpeed)
-napoved <- newSpeed %>% mutate(dist=predict(fit, .))
+predict(model, newSpeed)
+napoved <- newSpeed %>% mutate(dist=predict(model, .))
 
 napoved %>% View
 
@@ -57,13 +57,13 @@ enacba <- function(x) {
   as.character(as.expression(lm_eq));                 
 }
 
-enacba(fit)
+enacba(model)
 
 ggplot(cars, aes(x = speed, y = dist)) + 
   geom_point(shape=1) + 
   geom_smooth(method=lm, formula = y~x) +
   geom_point(data=napoved, aes(x=speed, y=dist), color='red', size=3) +
-  annotate("text", x = 20, y = 10, label = enacba(fit), parse = TRUE) +
+  annotate("text", x = 20, y = 10, label = enacba(model), parse = TRUE) +
   ggtitle('Linearna regresija') + 
   theme_bw()
 

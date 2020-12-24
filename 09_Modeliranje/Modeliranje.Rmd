@@ -1,9 +1,9 @@
 ---
 title: "Modeliranje"
 output:
-  beamer_presentation:
-    incremental: no
   ioslides_presentation:
+    incremental: yes
+  beamer_presentation:
     incremental: no
 ---
 
@@ -120,10 +120,10 @@ output:
 ## Linearna regresija
 
 - Primer nadzorovanega učenja.
-- Dan imamo nabor parov $(x_i, y_i)$, $x\in \mathbb{R}$, $y \in \mathbb{R}$, $i = 1, \ldots, n$.
+- Dan imamo nabor parov $(x_i, y_i)$, $x_i, y_i \in \mathbb{R}$, $i = 1, \ldots, n$.
 - Ti predstavljajo meritve nekega pojava, kjer je $x_i$ dimenzija meritve, $y_i$ pa sama meritev.
 - Primer: $x_i$ je neka hitrost avtomobila, $y_i$ pa meritev, kako dolga je bila zavorna pot (primer je zbirka `cars` v R).
-- Želimo določiti funkcijo $f: \mathbb{R} \to \mathbb{R}$, ki za dan $x$ vrne "kaj naj bi bil $y$$.
+- Želimo določiti funkcijo $f: \mathbb{R} \to \mathbb{R}$, ki za dan $x$ vrne "kaj naj bi bil $y$".
 
 ## Linearna regresija
 
